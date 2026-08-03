@@ -12,12 +12,15 @@ import {
   Trophy,
   ArrowLeft,
   Settings2,
+  Keyboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NeuroTwinLogo } from "@/components/shared/logo";
 import { AccessibilityToolbar } from "@/components/shared/accessibility-toolbar";
 import { CompanionDock } from "@/components/shared/companion-dock";
+import { ShortcutsHelp } from "@/components/shared/shortcuts-help";
+import { useKeyboardShortcuts } from "@/components/shared/use-keyboard-shortcuts";
 import { useApp, type World } from "@/store/app";
 import { useTwin } from "@/store/twin";
 import { useAccessibility } from "@/store/accessibility";
@@ -65,6 +68,9 @@ export function MindSpace() {
   const reduced = useReducedMotion() || a11y.motion === "reduced";
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
+  // Global keyboard shortcuts (Cmd+K companion, Cmd+/ help, Esc close)
+  useKeyboardShortcuts();
+
   const day = twin.dayCount();
   const activeKey: World | "twin" = world === "growth" ? "growth" : world;
 
@@ -94,6 +100,14 @@ export function MindSpace() {
 
           <div className="flex items-center gap-2">
             <TwinStatusPill />
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("neurotwin:show-shortcuts"))}
+              className="hidden md:inline-flex items-center gap-1 rounded-full border border-border/60 bg-card px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              aria-label="Show keyboard shortcuts"
+            >
+              <Keyboard className="size-3.5" />
+              <kbd className="font-mono">⌘K</kbd>
+            </button>
             <Button
               variant="ghost"
               size="sm"
@@ -211,6 +225,7 @@ export function MindSpace() {
       </div>
 
       <CompanionDock feature={activeKey} />
+      <ShortcutsHelp />
     </div>
   );
 }

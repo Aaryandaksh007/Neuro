@@ -27,6 +27,7 @@ import { Grounding } from "./grounding";
 import { TinyVictories } from "./tiny-victories";
 import { GratitudeNotes } from "./gratitude-notes";
 import { StressThermometer } from "./stress-thermometer";
+import { DaySummary } from "@/components/shared/day-summary";
 
 type Tab = "check-in" | "reflect" | "calm";
 
@@ -151,6 +152,8 @@ export default function WellnessWorld() {
 
           {/* Reflect tab */}
           <TabsContent value="reflect" className="mt-6 space-y-6 outline-none">
+            <DaySummary />
+
             <ReflectionJournal />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">

@@ -89,6 +89,13 @@ const TRAIT_ORDER = [
   "calm",
 ];
 
+function levelLabel(value: number): { label: string; color: string } {
+  if (value < 25) return { label: "Just beginning", color: "text-muted-foreground" };
+  if (value < 50) return { label: "Growing", color: "text-primary" };
+  if (value < 75) return { label: "Strong", color: "text-amber-glow-foreground" };
+  return { label: "Flourishing", color: "text-plum" };
+}
+
 export function TraitCard({
   trait,
   index = 0,
@@ -102,6 +109,7 @@ export function TraitCard({
   const appMotion = useAccessibility((s) => s.motion);
   const reduced = osReduced || appMotion === "reduced";
   const value = Math.round(trait.value);
+  const level = levelLabel(value);
 
   return (
     <motion.article
@@ -112,20 +120,20 @@ export function TraitCard({
         delay: reduced ? 0 : 0.05 * index,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="group relative rounded-2xl border bg-card nt-shadow-soft p-4 sm:p-5 overflow-hidden"
+      className="group relative rounded-2xl border bg-card nt-shadow-soft p-5 sm:p-6 overflow-hidden"
       aria-label={`${trait.label}: ${value} out of 100`}
     >
       {/* subtle wash */}
       <div
         aria-hidden
-        className="absolute -top-12 -right-12 size-32 rounded-full opacity-40 blur-2xl pointer-events-none"
+        className="absolute -top-12 -right-12 size-32 rounded-full opacity-40 blur-2xl pointer-events-none group-hover:opacity-60 transition-opacity"
         style={{ background: visual.barFrom }}
       />
 
       <div className="relative flex items-start gap-3">
         <span
           className={cn(
-            "flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/70",
+            "flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted/70 ring-1 ring-border/40",
             visual.accent
           )}
         >
@@ -144,10 +152,13 @@ export function TraitCard({
               <span className="text-muted-foreground text-xs">/100</span>
             </span>
           </div>
+          <p className={cn("text-[11px] font-medium mt-0.5", level.color)}>
+            {level.label}
+          </p>
 
           {/* bar */}
           <div
-            className="mt-2 h-2.5 w-full rounded-full bg-muted overflow-hidden"
+            className="mt-2.5 h-2.5 w-full rounded-full bg-muted overflow-hidden"
             role="progressbar"
             aria-valuenow={value}
             aria-valuemin={0}
@@ -173,7 +184,7 @@ export function TraitCard({
       </div>
 
       {/* Why I do this — Explainable AI callout */}
-      <div className="relative mt-3 flex items-start gap-2 rounded-lg bg-muted/50 px-3 py-2">
+      <div className="relative mt-4 flex items-start gap-2 rounded-lg bg-muted/50 px-3 py-2.5">
         <Sparkles className="size-3.5 text-amber-glow-foreground mt-0.5 shrink-0" />
         <p className="text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
           <span className="font-medium text-foreground/80">Why I do this: </span>
@@ -183,21 +194,21 @@ export function TraitCard({
 
       {/* Evidence — what the Twin noticed */}
       {trait.evidence.length > 0 && (
-        <div className="relative mt-3">
-          <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/80 mb-1.5">
+        <div className="relative mt-3.5">
+          <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/80 mb-2">
             What I noticed
           </p>
-          <ul className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+          <ul className="space-y-2 max-h-32 overflow-y-auto pr-1">
             {trait.evidence
               .slice()
               .reverse()
               .map((ev, i) => (
                 <li
                   key={i}
-                  className="text-[11px] sm:text-xs leading-relaxed text-foreground/75 flex gap-1.5"
+                  className="text-[11px] sm:text-xs leading-relaxed text-foreground/75 flex gap-2"
                 >
                   <span
-                    className="mt-1 size-1 rounded-full shrink-0"
+                    className="mt-1 size-1.5 rounded-full shrink-0"
                     style={{ background: visual.barFrom }}
                     aria-hidden
                   />
@@ -213,7 +224,7 @@ export function TraitCard({
 
 export function TraitGrid({ traits }: { traits: Record<string, TwinTrait> }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {TRAIT_ORDER.map((key, i) => {
         const t = traits[key];
         if (!t) return null;
