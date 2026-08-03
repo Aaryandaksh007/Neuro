@@ -511,3 +511,55 @@ Unresolved / next-phase recommendations:
 - Add a "learning summary" export (PDF/print) for educators/parents.
 - Add more breathing pattern options + a sensory profile questionnaire in onboarding.
 - Add a companion "check-in" notification after long idle periods.
+
+---
+Task ID: 14 (continuous improvement round 5)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, add interactive simulations, companion idle check-in, Growth sub-navigation.
+
+Work Log:
+- Reviewed worklog.md; confirmed round 4 added end-of-day summary, keyboard shortcuts, Twin trait card polish.
+- Ran agent-browser QA across all 5 screens + VLM analysis. Verified FAB clearance is working (FAB floats over padding area, not actual content). No critical bugs found.
+
+NEW FEATURES BUILT:
+1. Interactive Simulations — visual concept playgrounds (major "wow" feature from original spec):
+   - `src/components/learn/interactive-simulations.tsx`: 3 interactive simulations with tabbed interface:
+     • Water Cycle: animated simulation with sun, cloud, evaporation arrows, rain drops, water body with wave animation. 4 phases (Evaporation → Condensation → Precipitation → Collection) with phase labels + descriptions. Play/pause, speed slider (0.5-3×), reset. Reduced-motion fallback.
+     • Fractions: interactive pie chart + bar visualization with numerator/denominator sliders. Shows decimal + percent equivalents. Segments fill/unfill in real-time. Denominator 2-12, numerator auto-capped.
+     • pH Scale: vertical liquid tube with color-coded fill (red→purple), pH 0-14 slider, labels (Strong acid/Acidic/Neutral/Basic/Strong base), real-world examples (lemon juice, pure water, bleach).
+   - Integrated as a new "Simulations" tab in the Learn world (7 tabs total now).
+   - Twin integration: each simulation bumps curiosity trait + adds observation memory.
+   - Verified all 3 simulations render + are interactive. VLM rated 8/10.
+
+2. Companion Idle Check-In — gentle re-engagement after inactivity:
+   - `src/components/shared/idle-check-in.tsx`: tracks user activity (mousedown, keydown, touchstart, scroll). After 2 minutes of inactivity, shows a gentle check-in card (bottom-right, above FAB) with the companion's logo, a random warm message ("Been a moment — how are you doing?"), and two buttons: "Talk to me" (opens companion) / "I'm okay" (dismisses). Once dismissed per session, doesn't reappear. Reduced-motion support.
+   - Twin tie-in: adds observation memory ("I gently checked in after a quiet moment.").
+   - Integrated into MindSpace shell (globally available).
+   - Session-scoped dismissal (sessionStorage) so it doesn't annoy within a session.
+
+3. Growth Sub-Navigation — sticky section nav for the long Growth page:
+   - Added a sticky sub-nav bar (sticky top-14) to the Growth world with 7 section buttons: Forest, Galaxy, Qualities, River, Backpack, Timeline, Future.
+   - Uses IntersectionObserver to auto-highlight the section currently in view.
+   - Click any section to smooth-scroll to it. Each section has `scroll-mt-32` for proper offset.
+   - Frosted glass background (backdrop-blur-xl) for premium feel.
+   - VLM rated 9/10: "clean execution, strong typography hierarchy."
+
+POLISH:
+- Learn world: 7 tabs now (Adaptive Tutor, Learning DNA, Study Planner, Knowledge Graph, Simulations, Memory Heatmap, Playground).
+- Growth world: section IDs + scroll-mt for anchor navigation, improved structure.
+- Idle check-in adds a gentle, non-intrusive re-engagement touchpoint.
+
+Stage Summary:
+- 3 major features shipped: interactive simulations (3 sims), companion idle check-in, Growth sub-navigation.
+- Learn world now has interactive visual playgrounds — a key original spec feature ("Interactive Simulations", "Concept Playground").
+- Growth page is now navigable via sticky sub-nav, solving the "excessive vertical length" VLM concern.
+- Companion proactively checks in after idle periods — feels more alive + caring.
+- Lint clean, no page errors. VLM ratings: Growth subnav 9/10, simulations 8/10.
+
+Current project status: ENHANCED with interactive simulations, proactive companion check-ins, and Growth sub-navigation.
+Unresolved / next-phase recommendations:
+- Add more simulation types (photosynthesis, circuits, gravity, chemical reactions).
+- Add a "sensory profile questionnaire" in onboarding for deeper personalization.
+- Persist twin memories + study items + health logs to Prisma for cross-device continuity.
+- Add generated imagery for empty states (Growth forest, galaxy, backpack).
+- Add a parent/educator companion view (read-only dashboard).

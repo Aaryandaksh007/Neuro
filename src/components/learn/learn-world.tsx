@@ -8,6 +8,7 @@ import {
   Wand2,
   CalendarClock,
   Network,
+  FlaskConical,
   type LucideIcon,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,6 +20,7 @@ import { LearningDNAViz } from "./learning-dna-viz";
 import { MemoryHeatmap } from "./memory-heatmap";
 import { StudyPlanner } from "./study-planner";
 import { KnowledgeGraph } from "./knowledge-graph";
+import { InteractiveSimulations } from "./interactive-simulations";
 
 interface TabDef {
   key: string;
@@ -51,6 +53,12 @@ const TABS: TabDef[] = [
     label: "Knowledge Graph",
     icon: Network,
     hint: "How your ideas connect",
+  },
+  {
+    key: "simulations",
+    label: "Simulations",
+    icon: FlaskConical,
+    hint: "Play with concepts visually",
   },
   {
     key: "memory",
@@ -137,6 +145,9 @@ export default function LearnWorld() {
           </TabsContent>
           <TabsContent value="graph" className="mt-5 focus-visible:outline-none">
             <KnowledgeGraph />
+          </TabsContent>
+          <TabsContent value="simulations" className="mt-5 focus-visible:outline-none">
+            <InteractiveSimulations />
           </TabsContent>
           <TabsContent value="memory" className="mt-5 focus-visible:outline-none">
             <MemoryHeatmap />

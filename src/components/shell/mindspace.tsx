@@ -20,6 +20,7 @@ import { NeuroTwinLogo } from "@/components/shared/logo";
 import { AccessibilityToolbar } from "@/components/shared/accessibility-toolbar";
 import { CompanionDock } from "@/components/shared/companion-dock";
 import { ShortcutsHelp } from "@/components/shared/shortcuts-help";
+import { IdleCheckIn } from "@/components/shared/idle-check-in";
 import { useKeyboardShortcuts } from "@/components/shared/use-keyboard-shortcuts";
 import { useApp, type World } from "@/store/app";
 import { useTwin } from "@/store/twin";
@@ -226,6 +227,7 @@ export function MindSpace() {
 
       <CompanionDock feature={activeKey} />
       <ShortcutsHelp />
+      <IdleCheckIn />
     </div>
   );
 }
