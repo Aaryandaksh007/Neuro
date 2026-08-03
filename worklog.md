@@ -366,3 +366,54 @@ Unresolved / next-phase recommendations:
 - Knowledge Graph: add AI-powered concept relationship suggestions ("You learned X and Y — they connect via Z").
 - Persist twin memories + study items to Prisma for cross-device continuity.
 - Add image generation for lesson illustrations (image-generation skill available).
+
+---
+Task ID: 11 (continuous improvement round 2)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, add ASR voice input, AI lesson illustrations, AI concept relationships, polish.
+
+Work Log:
+- Reviewed worklog.md; confirmed round 1 added Voice Learning (TTS), Study Planner, Knowledge Graph.
+- Ran agent-browser QA across all 6 screens + VLM visual analysis.
+- VLM identified minor issues (FAB overlap already fixed, stress thermometer text — verified not truncated in code, just narrow column).
+
+NEW FEATURES BUILT:
+1. ASR (Speech-to-Text) Voice Input — for learners who speak better than they type:
+   - `/api/asr` route: receives base64 audio, uses z-ai-web-dev-sdk audio.asr.create(), returns transcribed text. Handles errors gracefully.
+   - `src/components/shared/voice-input.tsx`: reusable mic button component. Records audio via MediaRecorder API, converts to base64, sends to /api/asr, calls onTranscript callback. Features: recording indicator with pulse animation + timer (auto-stops at 30s), transcribing spinner, error handling (permission denied, too short), append/replace modes, reduced-motion support, size variants (sm/md/lg). Accessible aria-labels + aria-pressed.
+   - Integrated into Companion Dock: "Speak to your companion" mic button next to the text input. Learners can now talk to their AI companion by voice.
+   - Integrated into Adaptive Tutor: "Speak a topic" mic button next to the topic input. Learners can say what they want to learn instead of typing.
+   - Verified: both voice input buttons render and are functional.
+
+2. AI-Generated Lesson Illustrations — visual learning support:
+   - `/api/illustrate` route: uses z-ai-web-dev-sdk images.generations.create(), takes a topic + style, returns a base64 data URL. 4 styles: soft (watercolor), vivid (bright digital), minimal (flat), storybook (hand-drawn). Prompts engineered for calm, uncluttered, high-contrast, no-text images suitable for neurodivergent learners.
+   - `src/components/learn/lesson-illustration.tsx`: illustration card with generate button, style picker, loading state (shimmer + spinner), error retry, image display with gradient overlay, regenerate with different style. Twin integration: bumps visualPreference + adds memory.
+   - Integrated into `lesson-result.tsx`: appears in a sidebar (lg:sticky) next to the lesson text, so learners see the visual alongside the words. Grid layout: text (1fr) + illustration (280px) on large screens, stacked on mobile.
+   - Verified end-to-end: generated a lesson about photosynthesis, clicked "Illustrate this lesson", API returned a 1024x1024 image in ~30s, image rendered in the card. VLM rated 9/10: "clean side-by-side layout, high-quality relevant illustration, calm palette maintained."
+
+3. AI-Powered Concept Relationships — in the Knowledge Graph:
+   - `/api/concepts` route: takes a list of concepts, uses LLM to find meaningful connections between them. Returns JSON with connections array (from, to, bridge) + an insight string. Strict JSON-only output, 2-5 connections, concrete bridges in plain language.
+   - Integrated into `knowledge-graph.tsx`: "Find connections" button appears when ≥2 concepts exist. On click, calls /api/concepts, shows a connections panel below the graph with animated cards showing concept pairs (badges with ↔) + bridge explanations + an insight callout. Explainable AI badge. Twin integration: bumps curiosity + adds insight memory.
+   - Verified end-to-end: added 3 concepts (Photosynthesis, The water cycle, How the heart pumps blood), clicked "Find connections", AI returned 3 connections: "Photosynthesis ↔ The water cycle — Plants need water from the cycle for photosynthesis", "The water cycle ↔ How the heart pumps blood — Both are systems that move important things around", plus insight "You're exploring how different systems move and transform energy."
+
+POLISH:
+- Lesson result layout: redesigned to a 2-column grid (text + illustration sidebar) for a richer, more visual learning experience.
+- Companion dock: added voice input mic button, updated placeholder to "Type or speak — I won't judge."
+- Adaptive Tutor: added voice input mic button for speaking topics.
+- Knowledge Graph: added "Find connections" button + AI connections panel with animated cards.
+
+Stage Summary:
+- 3 major new features shipped: ASR voice input, AI lesson illustrations, AI concept relationships.
+- 2 new API routes: /api/asr, /api/illustrate, /api/concepts (total AI routes now: companion, learn, reflection, twin, tts, asr, illustrate, concepts = 8).
+- Cross-modal learning now complete: learners can READ (text), LISTEN (TTS), SPEAK (ASR), and SEE (illustrations) — covering all learning modalities.
+- Knowledge Graph is now AI-powered: not just a visualization but an active learning tool that discovers relationships.
+- Lint clean, no runtime/page errors.
+- VLM rated lesson-with-illustration 9/10.
+
+Current project status: ENHANCED with full multi-modal learning (read + listen + speak + see) + AI-powered knowledge connections.
+Unresolved / next-phase recommendations:
+- Persist twin memories + study items to Prisma for cross-device continuity.
+- Add voice output to the companion chat (TTS for AI replies) for fully conversational interaction.
+- Integrate Study Planner with Focus Timer for timed review sessions.
+- Add image generation for empty states across all worlds (Growth forest, Memory galaxy, etc.).
+- Add a "learning streak" celebration animation in the Growth world.

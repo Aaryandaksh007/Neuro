@@ -7,6 +7,7 @@ import { MotionDiv } from "@/components/shared/motion";
 import { Flashcards } from "./flashcards";
 import { AdaptiveQuiz } from "./adaptive-quiz";
 import { VoicePlayer } from "./voice-player";
+import { LessonIllustration } from "./lesson-illustration";
 import type { LearnFormat, LearnResult } from "./use-learn";
 
 /** Split off a trailing "Why this helps you" line so we can render it as a callout. */
@@ -145,8 +146,13 @@ export function LessonResult({
       className="space-y-4"
     >
       <VoicePlayer text={body} label="Listen to this lesson" />
-      <div className="max-h-[60vh] overflow-y-auto pr-1">
-        <MarkdownBody>{body}</MarkdownBody>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 items-start">
+        <div className="max-h-[60vh] overflow-y-auto pr-1 order-2 lg:order-1">
+          <MarkdownBody>{body}</MarkdownBody>
+        </div>
+        <div className="order-1 lg:order-2 lg:sticky lg:top-2">
+          <LessonIllustration topic={topic} />
+        </div>
       </div>
       {why && <WhyCard why={why} />}
     </MotionDiv>

@@ -6,6 +6,7 @@ import { Sparkles, X, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { VoiceInput } from "@/components/shared/voice-input";
 import { useApp } from "@/store/app";
 import { useTwin } from "@/store/twin";
 import { useWellness } from "@/store/wellness";
@@ -164,6 +165,12 @@ export function CompanionDock({ feature }: { feature?: string }) {
 
             {/* input */}
             <div className="border-t p-3 flex items-end gap-2 bg-card">
+              <VoiceInput
+                size="sm"
+                label="Speak to your companion"
+                currentValue={input}
+                onTranscript={(text) => setInput(text)}
+              />
               <Textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -173,8 +180,8 @@ export function CompanionDock({ feature }: { feature?: string }) {
                     submit();
                   }
                 }}
-                placeholder="Type freely — I won't judge."
-                className="min-h-[44px] max-h-32 resize-none text-sm"
+                placeholder="Type or speak — I won't judge."
+                className="min-h-[44px] max-h-32 resize-none text-sm flex-1"
                 aria-label="Message your companion"
               />
               <Button

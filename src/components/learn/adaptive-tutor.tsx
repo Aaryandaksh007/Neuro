@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MotionDiv, fadeUp, stagger } from "@/components/shared/motion";
+import { VoiceInput } from "@/components/shared/voice-input";
 import { FormatChips } from "./format-chips";
 import { LessonResult, LessonEmptyState, LessonLoading } from "./lesson-result";
 import {
@@ -94,6 +95,12 @@ export function AdaptiveTutor() {
               aria-label="Topic to learn"
               className="h-11 flex-1 rounded-xl border-border bg-background/70 text-base"
               disabled={loading}
+            />
+            <VoiceInput
+              size="md"
+              label="Speak a topic"
+              currentValue={topic}
+              onTranscript={(text) => setTopic(text)}
             />
             <Button
               type="submit"

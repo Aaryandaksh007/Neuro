@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Network, Sparkles, Plus, X } from "lucide-react";
+import { Network, Sparkles, Plus, X, Loader2, Lightbulb, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -103,6 +103,12 @@ export function KnowledgeGraph() {
   const [newConcept, setNewConcept] = useState("");
   const [newGroup, setNewGroup] = useState("Ideas");
   const [selected, setSelected] = useState<string | null>(null);
+  const [connections, setConnections] = useState<
+    { from: string; to: string; bridge: string }[]
+  >([]);
+  const [insight, setInsight] = useState<string>("");
+  const [findingConnections, setFindingConnections] = useState(false);
+  const [showConnections, setShowConnections] = useState(false);
 
   const { nodes, edges } = useMemo(() => layoutNodes(stars), [stars]);
   const nodeMap = useMemo(() => {
@@ -128,6 +134,36 @@ export function KnowledgeGraph() {
   };
 
   const selectedNode = selected ? nodeMap[selected] : null;
+
+  const findConnections = useCallback(async () => {
+    if (stars.length < 2 || findingConnections) return;
+    setFindingConnections(true);
+    setShowConnections(true);
+    try {
+      const res = await fetch("/api/concepts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          concepts: stars.map((s) => s.concept),
+        }),
+      });
+      const data = await res.json();
+      setConnections(data.connections || []);
+      setInsight(data.insight || "");
+      if ((data.connections || []).length > 0) {
+        twin.bumpTrait("curiosity", 3, "Explored how your concepts connect.");
+        twin.addMemory({
+          text: "You discovered connections between your concepts.",
+          kind: "insight",
+        });
+      }
+    } catch {
+      setConnections([]);
+      setInsight("I couldn't map those right now — try again?");
+    } finally {
+      setFindingConnections(false);
+    }
+  }, [stars, findingConnections, twin]);
 
   return (
     <Card className="relative overflow-hidden border-border/60 nt-shadow-soft">
@@ -156,6 +192,21 @@ export function KnowledgeGraph() {
             {adding ? <X className="size-3.5" /> : <Plus className="size-3.5" />}
             {adding ? "Cancel" : "Add concept"}
           </Button>
+          {stars.length >= 2 && (
+            <Button
+              size="sm"
+              className="gap-1.5 rounded-full"
+              onClick={findConnections}
+              disabled={findingConnections}
+            >
+              {findingConnections ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Zap className="size-3.5" />
+              )}
+              {findingConnections ? "Mapping…" : "Find connections"}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -334,6 +385,68 @@ export function KnowledgeGraph() {
             );
           })}
         </div>
+      )}
+
+      {/* AI connections panel */}
+      {showConnections && (
+        <MotionDiv
+          initial={reduced ? false : { opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          className="px-4 sm:px-5 py-4 border-t border-primary/20 bg-primary/5"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Lightbulb className="size-4 text-primary" aria-hidden />
+            <p className="text-sm font-semibold">How your ideas connect</p>
+            <Badge variant="secondary" className="rounded-full text-[10px] ml-auto gap-1">
+              <Sparkles className="size-3" /> Explainable AI
+            </Badge>
+          </div>
+
+          {findingConnections ? (
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="nt-shimmer h-12 rounded-lg" />
+              ))}
+            </div>
+          ) : connections.length > 0 ? (
+            <div className="space-y-2.5">
+              {connections.map((c, i) => (
+                <motion.div
+                  key={i}
+                  initial={reduced ? false : { opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                  className="rounded-xl border border-border/50 bg-card/70 p-3"
+                >
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <Badge className="rounded-full bg-primary/15 text-primary hover:bg-primary/15 text-xs">
+                      {c.from}
+                    </Badge>
+                    <span className="text-muted-foreground text-xs">↔</span>
+                    <Badge className="rounded-full bg-amber-glow/15 text-amber-glow-foreground hover:bg-amber-glow/15 text-xs">
+                      {c.to}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {c.bridge}
+                  </p>
+                </motion.div>
+              ))}
+              {insight && (
+                <div className="rounded-xl bg-primary/10 border border-primary/20 p-3 mt-3">
+                  <p className="text-xs text-primary font-medium flex items-start gap-1.5">
+                    <Sparkles className="size-3.5 shrink-0 mt-0.5" />
+                    {insight}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              {insight || "I couldn't find strong connections between these concepts yet. Keep learning — patterns will emerge."}
+            </p>
+          )}
+        </MotionDiv>
       )}
 
       {/* Selected node detail */}
