@@ -12,6 +12,7 @@ import {
   Cloud,
   ArrowDown,
   ArrowUp,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -24,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MotionDiv, fadeUp } from "@/components/shared/motion";
 import { cn } from "@/lib/utils";
 
-type SimKey = "water-cycle" | "fractions" | "ph-scale";
+type SimKey = "water-cycle" | "fractions" | "ph-scale" | "photosynthesis" | "gravity" | "circuits";
 
 interface SimDef {
   key: SimKey;
@@ -51,6 +52,24 @@ const SIMS: SimDef[] = [
     label: "pH Scale",
     icon: Droplet,
     desc: "Explore acids and bases",
+  },
+  {
+    key: "photosynthesis",
+    label: "Photosynthesis",
+    icon: Sun,
+    desc: "How plants make food from light",
+  },
+  {
+    key: "gravity",
+    label: "Gravity",
+    icon: ArrowDown,
+    desc: "Drop things, see gravity work",
+  },
+  {
+    key: "circuits",
+    label: "Circuits",
+    icon: Zap,
+    desc: "Build a path for electricity",
   },
 ];
 
@@ -101,6 +120,15 @@ export function InteractiveSimulations() {
             </TabsContent>
             <TabsContent value="ph-scale" className="mt-4 outline-none">
               <PHScaleSim />
+            </TabsContent>
+            <TabsContent value="photosynthesis" className="mt-4 outline-none">
+              <PhotosynthesisSim reduced={reduced} />
+            </TabsContent>
+            <TabsContent value="gravity" className="mt-4 outline-none">
+              <GravitySim reduced={reduced} />
+            </TabsContent>
+            <TabsContent value="circuits" className="mt-4 outline-none">
+              <CircuitSim />
             </TabsContent>
           </Tabs>
         </div>
@@ -496,6 +524,354 @@ function PHScaleSim() {
           <span>14</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ===================== Photosynthesis Simulation ===================== */
+function PhotosynthesisSim({ reduced }: { reduced: boolean | null }) {
+  const [light, setLight] = useState(60); // sunlight intensity 0-100
+  const [water, setWater] = useState(50); // water 0-100
+  const [co2, setCo2] = useState(40); // CO2 0-100
+  const twin = useTwin((s) => s.bumpTrait);
+
+  useEffect(() => {
+    twin("curiosity", 1, "Explored the photosynthesis simulation.");
+  }, [twin]);
+
+  // Glucose output = min of the three (limiting factor principle)
+  const glucose = Math.min(light, water, co2);
+  const oxygen = Math.round(glucose * 0.8);
+
+  return (
+    <div>
+      <div
+        className="relative h-64 rounded-xl overflow-hidden border border-border/40"
+        style={{
+          background: `linear-gradient(to bottom, oklch(0.85 0.08 ${60 + light * 0.3} / ${0.15 + light * 0.003}), oklch(0.78 0.1 155 / 0.1))`,
+        }}
+        role="img"
+        aria-label="Photosynthesis simulation"
+      >
+        {/* Sun (brightness scales with light) */}
+        <motion.div
+          className="absolute top-3 right-3"
+          animate={reduced ? undefined : { rotate: 360 }}
+          transition={reduced ? undefined : { duration: 25, repeat: Infinity, ease: "linear" }}
+          style={{ opacity: 0.3 + (light / 100) * 0.7 }}
+        >
+          <Sun className="size-10 text-amber-glow-foreground" />
+        </motion.div>
+
+        {/* Light rays */}
+        {!reduced && light > 20 &&
+          [0, 1, 2, 3].map((i) => (
+            <motion.div
+              key={i}
+              className="absolute"
+              style={{ left: `${30 + i * 12}%`, top: "15%" }}
+              initial={{ opacity: 0, y: 0 }}
+              animate={{ opacity: [0, light / 150, 0], y: [0, 80] }}
+              transition={{ duration: 1.5, delay: i * 0.3, repeat: Infinity }}
+            >
+              <div
+                className="w-0.5 h-8 rounded-full"
+                style={{ background: "oklch(0.84 0.13 80 / 0.6)" }}
+              />
+            </motion.div>
+          ))}
+
+        {/* Plant */}
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2">
+          <svg viewBox="0 0 100 120" className="size-32">
+            {/* Pot */}
+            <path d="M25 90 L30 115 L70 115 L75 90 Z" fill="oklch(0.6 0.08 40)" />
+            <rect x="23" y="85" width="54" height="8" rx="2" fill="oklch(0.55 0.09 35)" />
+            {/* Stem */}
+            <rect
+              x="47"
+              y={90 - glucose * 0.5}
+              width="6"
+              height={glucose * 0.5}
+              fill="oklch(0.55 0.12 150)"
+            />
+            {/* Leaves (more with higher glucose) */}
+            {glucose > 10 && (
+              <ellipse cx="35" cy={85 - glucose * 0.2} rx="12" ry="6" fill="oklch(0.65 0.13 155)" transform={`rotate(-20 35 ${85 - glucose * 0.2})`} />
+            )}
+            {glucose > 25 && (
+              <ellipse cx="65" cy={80 - glucose * 0.2} rx="12" ry="6" fill="oklch(0.7 0.12 155)" transform={`rotate(20 65 ${80 - glucose * 0.2})`} />
+            )}
+            {glucose > 50 && (
+              <ellipse cx="40" cy={65 - glucose * 0.1} rx="10" ry="5" fill="oklch(0.72 0.11 155)" transform={`rotate(-15 40 ${65 - glucose * 0.1})`} />
+            )}
+            {glucose > 75 && (
+              <circle cx="50" cy="50" r="6" fill="oklch(0.84 0.13 80)" />
+            )}
+          </svg>
+        </div>
+
+        {/* Oxygen bubbles rising */}
+        {!reduced && oxygen > 10 &&
+          [0, 1, 2].map((i) => (
+            <motion.div
+              key={i}
+              className="absolute"
+              style={{ left: `${45 + i * 8}%`, bottom: "40%" }}
+              initial={{ opacity: 0, y: 0 }}
+              animate={{ opacity: [0, oxygen / 120, 0], y: [0, -60] }}
+              transition={{ duration: 2, delay: i * 0.6, repeat: Infinity }}
+            >
+              <div className="size-2 rounded-full border border-primary/50" />
+            </motion.div>
+          ))}
+
+        {/* Output labels */}
+        <div className="absolute top-3 left-3 rounded-lg bg-background/80 backdrop-blur px-3 py-1.5">
+          <p className="text-xs font-semibold">Glucose: <span className="text-primary tabular-nums">{Math.round(glucose)}%</span></p>
+          <p className="text-[10px] text-muted-foreground">Oxygen: {oxygen}% · The limiting factor wins</p>
+        </div>
+      </div>
+
+      {/* Sliders */}
+      <div className="mt-4 space-y-3">
+        <SliderRow label="Sunlight" value={light} onChange={setLight} color="oklch(0.84 0.13 80)" icon={<Sun className="size-3.5" />} />
+        <SliderRow label="Water" value={water} onChange={setWater} color="oklch(0.7 0.1 200)" icon={<Droplet className="size-3.5" />} />
+        <SliderRow label="CO₂" value={co2} onChange={setCo2} color="oklch(0.6 0.05 150)" icon={<Cloud className="size-3.5" />} />
+      </div>
+      <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+        Plants need all three. Whichever is lowest limits growth — that&apos;s the
+        &ldquo;limiting factor.&rdquo; Balance them to maximize glucose.
+      </p>
+    </div>
+  );
+}
+
+function SliderRow({ label, value, onChange, color, icon }: {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+  color: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+          {icon} {label}
+        </span>
+        <span className="text-xs font-medium tabular-nums" style={{ color }}>{value}%</span>
+      </div>
+      <Slider value={[value]} onValueChange={(v) => onChange(v[0])} min={0} max={100} step={5} aria-label={label} />
+    </div>
+  );
+}
+
+/* ===================== Gravity Simulation ===================== */
+function GravitySim({ reduced }: { reduced: boolean | null }) {
+  const [planet, setPlanet] = useState<"earth" | "moon" | "jupiter">("earth");
+  const [height, setHeight] = useState(50);
+  const [dropping, setDropping] = useState(false);
+  const [dropY, setDropY] = useState(0);
+  const twin = useTwin((s) => s.bumpTrait);
+
+  const gravity = { earth: 9.8, moon: 1.6, jupiter: 24.8 }[planet];
+  const fallTime = Math.sqrt((2 * height) / gravity);
+  const impactSpeed = Math.sqrt(2 * gravity * height);
+
+  useEffect(() => {
+    twin("curiosity", 1, "Explored the gravity simulation.");
+  }, [twin]);
+
+  useEffect(() => {
+    if (!dropping) return;
+    const start = Date.now();
+    const interval = setInterval(() => {
+      const elapsed = (Date.now() - start) / 1000;
+      const dist = 0.5 * gravity * elapsed * elapsed;
+      const pct = Math.min(100, (dist / height) * 100);
+      setDropY(pct);
+      if (pct >= 100) {
+        clearInterval(interval);
+        queueMicrotask(() => setDropping(false));
+      }
+    }, 16);
+    return () => clearInterval(interval);
+  }, [dropping, gravity, height]);
+
+  const planetColor = {
+    earth: "oklch(0.6 0.1 220)",
+    moon: "oklch(0.75 0.02 60)",
+    jupiter: "oklch(0.7 0.08 40)",
+  }[planet];
+
+  return (
+    <div>
+      <div className="relative h-64 rounded-xl overflow-hidden border border-border/40 bg-gradient-to-b from-background to-muted/30">
+        {/* Ball */}
+        <motion.div
+          className="absolute left-1/2 -translate-x-1/2 size-8 rounded-full"
+          style={{
+            top: `${10 + dropY * 0.7}%`,
+            background: planetColor,
+            boxShadow: `0 0 12px ${planetColor}`,
+          }}
+          animate={reduced ? undefined : undefined}
+        />
+
+        {/* Ground */}
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-muted to-transparent border-t border-border/40" />
+
+        {/* Height marker */}
+        <div className="absolute left-4 top-4 bottom-12 w-px bg-border/40">
+          <div className="absolute -left-1 w-2 h-px bg-border/60" style={{ top: 0 }} />
+          <div className="absolute -left-8 -translate-y-1/2 text-[10px] text-muted-foreground tabular-nums" style={{ top: `${100 - height}%` }}>
+            {height}m
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="absolute top-3 right-3 rounded-lg bg-background/80 backdrop-blur px-3 py-1.5 text-right">
+          <p className="text-xs font-semibold">g = {gravity} m/s²</p>
+          <p className="text-[10px] text-muted-foreground">Fall: {fallTime.toFixed(2)}s · Impact: {impactSpeed.toFixed(1)} m/s</p>
+        </div>
+      </div>
+
+      <div className="mt-4 space-y-3">
+        <div className="flex gap-1.5">
+          {(["earth", "moon", "jupiter"] as const).map((p) => (
+            <button
+              key={p}
+              onClick={() => { setPlanet(p); setDropY(0); }}
+              aria-pressed={planet === p}
+              className={cn(
+                "flex-1 rounded-lg border py-2 text-xs font-medium capitalize transition-all",
+                planet === p ? "border-primary bg-primary/15 text-primary" : "hover:bg-accent"
+              )}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+        <SliderRow label="Drop height" value={height} onChange={(v) => { setHeight(v); setDropY(0); }} color="oklch(0.7 0.1 200)" icon={<ArrowUp className="size-3.5" />} />
+        <Button onClick={() => setDropping(true)} disabled={dropping} className="w-full rounded-full gap-1.5" size="sm">
+          {dropping ? "Falling…" : "Drop it"}
+        </Button>
+      </div>
+      <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+        Same height, different planets → different fall times. Higher gravity =
+        faster fall. The moon is gentle; Jupiter is intense.
+      </p>
+    </div>
+  );
+}
+
+/* ===================== Circuit Simulation ===================== */
+function CircuitSim() {
+  const [battery, setBattery] = useState(true);
+  const [wire1, setWire1] = useState(true);
+  const [bulb, setBulb] = useState(true);
+  const [wire2, setWire2] = useState(true);
+  const twin = useTwin((s) => s.bumpTrait);
+  const reduced = useReducedMotion();
+
+  useEffect(() => {
+    twin("curiosity", 1, "Explored the circuits simulation.");
+  }, [twin]);
+
+  const complete = battery && wire1 && bulb && wire2;
+  const flowing = complete;
+
+  return (
+    <div>
+      <div className="relative h-56 rounded-xl overflow-hidden border border-border/40 bg-muted/20 p-6">
+        <svg viewBox="0 0 300 200" className="w-full h-full">
+          {/* Wire path (top: battery → wire1 → bulb → wire2 → back) */}
+          <path
+            d="M 50 150 L 50 50 L 120 50 L 120 80 M 120 120 L 120 150 L 50 150"
+            fill="none"
+            stroke={complete ? "oklch(0.7 0.1 200)" : "oklch(0.7 0.02 150 / 0.3)"}
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+          {/* Right side wire (always connected if bulb present) */}
+          <path
+            d="M 180 50 L 250 50 L 250 150 L 120 150"
+            fill="none"
+            stroke={complete ? "oklch(0.7 0.1 200)" : "oklch(0.7 0.02 150 / 0.3)"}
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+
+          {/* Battery (left) */}
+          <g onClick={() => setBattery((v) => !v)} className="cursor-pointer">
+            <rect x="38" y="90" width="24" height="20" rx="2" fill={battery ? "oklch(0.7 0.1 200)" : "oklch(0.8 0.01 150)"} stroke="oklch(0.5 0.02 150)" strokeWidth="1" />
+            <text x="50" y="125" textAnchor="middle" className="text-[8px] fill-muted-foreground">Battery</text>
+            {!battery && <text x="50" y="85" textAnchor="middle" className="text-[8px] fill-rose-soft-foreground">✕</text>}
+          </g>
+
+          {/* Wire 1 (top left) */}
+          <g onClick={() => setWire1((v) => !v)} className="cursor-pointer">
+            <line x1="50" y1="50" x2="120" y2="50" stroke={wire1 ? "transparent" : "oklch(0.6 0.02 150 / 0.5)"} strokeWidth="6" strokeLinecap="round" strokeDasharray={wire1 ? "0" : "4 4"} />
+            {!wire1 && <text x="85" y="42" textAnchor="middle" className="text-[8px] fill-rose-soft-foreground">✕ broken</text>}
+          </g>
+
+          {/* Bulb (center) */}
+          <g onClick={() => setBulb((v) => !v)} className="cursor-pointer">
+            <circle cx="150" cy="50" r="20" fill={bulb && flowing ? "oklch(0.9 0.15 80)" : bulb ? "oklch(0.85 0.02 80)" : "oklch(0.8 0.01 150)"} stroke="oklch(0.5 0.02 150)" strokeWidth="1.5" />
+            {bulb && flowing && (
+              <circle cx="150" cy="50" r="28" fill="oklch(0.9 0.15 80 / 0.3)" className={reduced ? "" : "nt-breathe"} />
+            )}
+            <text x="150" y="85" textAnchor="middle" className="text-[8px] fill-muted-foreground">Bulb</text>
+            {!bulb && <text x="150" y="40" textAnchor="middle" className="text-[8px] fill-rose-soft-foreground">✕ missing</text>}
+          </g>
+
+          {/* Wire 2 (bottom) */}
+          <g onClick={() => setWire2((v) => !v)} className="cursor-pointer">
+            <line x1="120" y1="150" x2="250" y2="150" stroke={wire2 ? "transparent" : "oklch(0.6 0.02 150 / 0.5)"} strokeWidth="6" strokeLinecap="round" strokeDasharray={wire2 ? "0" : "4 4"} />
+            {!wire2 && <text x="185" y="165" textAnchor="middle" className="text-[8px] fill-rose-soft-foreground">✕ broken</text>}
+          </g>
+
+          {/* Current flow animation */}
+          {flowing && !reduced && (
+            <circle r="3" fill="oklch(0.84 0.13 80)">
+              <animateMotion dur="2s" repeatCount="indefinite" path="M 50 150 L 50 50 L 250 50 L 250 150 L 50 150" />
+            </circle>
+          )}
+        </svg>
+
+        {/* Status */}
+        <div className="absolute top-3 right-3 rounded-lg bg-background/80 backdrop-blur px-3 py-1.5">
+          <p className={cn("text-xs font-semibold", flowing ? "text-amber-glow-foreground" : "text-muted-foreground")}>
+            {flowing ? "⚡ Circuit complete — bulb on!" : "Circuit broken"}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        {[
+          { label: "Battery", state: battery, set: setBattery },
+          { label: "Wire 1", state: wire1, set: setWire1 },
+          { label: "Bulb", state: bulb, set: setBulb },
+          { label: "Wire 2", state: wire2, set: setWire2 },
+        ].map((c) => (
+          <button
+            key={c.label}
+            onClick={() => c.set((v: boolean) => !v)}
+            className={cn(
+              "rounded-lg border py-2 px-3 text-xs font-medium transition-all flex items-center justify-between",
+              c.state ? "border-primary bg-primary/10 text-primary" : "border-rose-soft/40 bg-rose-soft/5 text-rose-soft-foreground"
+            )}
+          >
+            {c.label}
+            <span className="text-[10px]">{c.state ? "✓ connected" : "✕ broken"}</span>
+          </button>
+        ))}
+      </div>
+      <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+        Electricity needs a complete loop. Tap any part to break or fix it. The
+        bulb only lights when the whole circuit is connected.
+      </p>
     </div>
   );
 }

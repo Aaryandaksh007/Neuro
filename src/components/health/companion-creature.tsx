@@ -500,6 +500,40 @@ export function CompanionCreature() {
           >
             <div className="h-60 w-60 rounded-full bg-amber-glow/25 blur-3xl nt-breathe" />
           </div>
+
+          {/* Floating sparkle particles for charm */}
+          <div className="absolute inset-0 pointer-events-none" aria-hidden>
+            {[
+              { left: "15%", top: "20%", delay: 0, size: 3 },
+              { left: "80%", top: "15%", delay: 1.2, size: 4 },
+              { left: "10%", top: "70%", delay: 2.4, size: 3 },
+              { left: "85%", top: "75%", delay: 0.6, size: 3 },
+              { left: "50%", top: "10%", delay: 1.8, size: 2 },
+              { left: "70%", top: "55%", delay: 3.0, size: 2 },
+            ].map((p, i) => (
+              <span
+                key={i}
+                className="absolute rounded-full nt-twinkle"
+                style={{
+                  left: p.left,
+                  top: p.top,
+                  width: p.size,
+                  height: p.size,
+                  background:
+                    companionStage >= 3
+                      ? "oklch(0.84 0.13 80 / 0.7)"
+                      : "oklch(0.78 0.1 155 / 0.5)",
+                  boxShadow: `0 0 ${p.size * 3}px ${
+                    companionStage >= 3
+                      ? "oklch(0.84 0.13 80 / 0.5)"
+                      : "oklch(0.78 0.1 155 / 0.4)"
+                  }`,
+                  animationDelay: `${p.delay}s`,
+                }}
+              />
+            ))}
+          </div>
+
           <MotionDiv className="nt-float w-full flex items-center justify-center">
             <Creature
               stage={companionStage}

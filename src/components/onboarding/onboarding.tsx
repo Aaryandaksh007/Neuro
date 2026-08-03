@@ -33,7 +33,7 @@ import { useTwin } from "@/store/twin";
 import { useAccessibility } from "@/store/accessibility";
 import { cn } from "@/lib/utils";
 
-const STEPS = ["Welcome", "Learning DNA", "Goals", "Safety", "Your Twin"];
+const STEPS = ["Welcome", "Learning DNA", "Goals", "Safety", "Sensory", "Your Twin"];
 
 export function Onboarding() {
   const [step, setStep] = useState(0);
@@ -132,7 +132,8 @@ export function Onboarding() {
               )}
               {step === 2 && <StepGoals profile={profile} setProfile={setProfile} />}
               {step === 3 && <StepSafety profile={profile} setProfile={setProfile} />}
-              {step === 4 && <StepTwin profile={profile} companionName={companionName} />}
+              {step === 4 && <StepSensory profile={profile} setProfile={setProfile} />}
+              {step === 5 && <StepTwin profile={profile} companionName={companionName} />}
             </motion.div>
           </AnimatePresence>
 
@@ -509,6 +510,92 @@ function StepSafety({ profile, setProfile }: any) {
         <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1.5">
           <ShieldCheck className="size-3.5" /> Never diagnosed, never shared.
           Only used to make things gentler for you.
+        </p>
+      </Card>
+    </div>
+  );
+}
+
+function StepSensory({ profile, setProfile }: any) {
+  const SENSORY_ITEMS = [
+    { key: "bright-lights", label: "Bright lights bother me", icon: "💡" },
+    { key: "loud-sounds", label: "Loud sounds overwhelm me", icon: "🔊" },
+    { key: "textures", label: "Certain textures bother me", icon: "✋" },
+    { key: "crowds", label: "Crowds feel like too much", icon: "👥" },
+    { key: "changes", label: "Sudden changes are hard", icon: "🔄" },
+    { key: "focusing", label: "Hard to filter distractions", icon: "🎯" },
+    { key: "sitting-still", label: "I need to move to focus", icon: "🚶" },
+    { key: "eye-contact", label: "Eye contact feels intense", icon: "👁️" },
+  ];
+
+  const toggle = (key: string) => {
+    const arr = (profile.sensoryNotes ? profile.sensoryNotes.split("|") : []).filter(Boolean);
+    // Use sensoryNotes as a pipe-delimited list of sensory keys for structured data
+    // (the free-text note is preserved separately if present)
+    if (arr.includes(key)) {
+      const next = arr.filter((k: string) => k !== key);
+      setProfile({ sensoryNotes: next.join("|") });
+    } else {
+      const next = [...arr, key];
+      setProfile({ sensoryNotes: next.join("|") });
+    }
+  };
+
+  const selected = (profile.sensoryNotes || "").split("|").filter(Boolean);
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <Badge variant="secondary" className="rounded-full gap-1.5 mb-3">
+          <Sparkles className="size-3.5" /> Your sensory world
+        </Badge>
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+          What feels like too much?
+        </h1>
+        <p className="text-muted-foreground mt-2">
+          This helps me soften the experience for you. There&apos;s no right
+          answer — and you can change anything later. Skip what doesn&apos;t fit.
+        </p>
+      </div>
+
+      <Card className="p-5 nt-shadow-soft border-border/60">
+        <p className="text-sm font-medium mb-3">Tap anything that feels true:</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {SENSORY_ITEMS.map((s) => {
+            const active = selected.includes(s.key);
+            return (
+              <button
+                key={s.key}
+                onClick={() => toggle(s.key)}
+                aria-pressed={active}
+                className={cn(
+                  "rounded-xl border p-3 text-left transition-all flex items-center gap-2.5",
+                  active
+                    ? "border-primary bg-primary/10 nt-shadow-soft"
+                    : "hover:bg-accent hover:-translate-y-0.5"
+                )}
+              >
+                <span className="text-lg shrink-0">{s.icon}</span>
+                <span className="text-sm font-medium flex-1">{s.label}</span>
+                {active && <Check className="size-4 text-primary shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+      </Card>
+
+      <Card className="p-5 nt-shadow-soft border-border/60">
+        <Label htmlFor="sensory-extra">Anything else I should know? (optional)</Label>
+        <Textarea
+          id="sensory-extra"
+          value={selected.length > 0 ? "" : profile.sensoryNotes || ""}
+          onChange={(e) => setProfile({ sensoryNotes: e.target.value })}
+          placeholder="e.g. I love knowing the plan ahead, or certain sounds help me focus."
+          className="mt-1.5 min-h-[70px]"
+        />
+        <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1.5">
+          <ShieldCheck className="size-3.5" /> Never diagnosed, never shared. Only
+          used to make things gentler for you.
         </p>
       </Card>
     </div>

@@ -563,3 +563,52 @@ Unresolved / next-phase recommendations:
 - Persist twin memories + study items + health logs to Prisma for cross-device continuity.
 - Add generated imagery for empty states (Growth forest, galaxy, backpack).
 - Add a parent/educator companion view (read-only dashboard).
+
+---
+Task ID: 15 (continuous improvement round 6)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, add 3 more simulations, sensory profile questionnaire, companion creature polish.
+
+Work Log:
+- Reviewed worklog.md; confirmed round 5 added interactive simulations, idle check-in, Growth sub-nav.
+- Ran agent-browser QA across all screens + VLM. No critical bugs found. Health creature rated 8/10 (needed more charm).
+
+NEW FEATURES BUILT:
+1. Three new interactive simulations (Photosynthesis, Gravity, Circuits):
+   - Photosynthesis: 3 sliders (sunlight, water, CO₂) that control a growing plant SVG. Demonstrates the "limiting factor" principle — glucose output = min of the 3 inputs. Animated light rays, oxygen bubbles rising, plant grows more leaves/flower as glucose increases. Sun rotates.
+   - Gravity: planet selector (Earth/Moon/Jupiter) + height slider + "Drop it" button. Real physics: fall time = √(2h/g), impact speed = √(2gh). Ball animates falling with correct acceleration. Shows how gravity differs across planets.
+   - Circuits: interactive SVG circuit with 4 clickable components (battery, wire1, bulb, wire2). Tap any to break/fix. Bulb only lights when circuit is complete. Animated current flow dot travels the circuit path. Teaches "electricity needs a complete loop."
+   - All integrated into the existing Simulations tab (6 sims total now). Twin integration: each bumps curiosity + adds memory.
+   - Fixed bug: `Zap` icon wasn't imported → caused Runtime ReferenceError. Fixed by adding to imports.
+   - Fixed lint: setState-in-effect in GravitySim → used queueMicrotask.
+   - Verified all 3 new sims render + are interactive.
+
+2. Sensory Profile Questionnaire in onboarding:
+   - New "Sensory" step (step 5 of 6) between Safety and Your Twin.
+   - 8 sensory items with emoji icons: bright lights, loud sounds, textures, crowds, sudden changes, filtering distractions, need to move, eye contact.
+   - Tap to select/deselect; selections stored as pipe-delimited keys in profile.sensoryNotes.
+   - Optional free-text textarea for additional notes.
+   - Ethics: "Never diagnosed, never shared. Only used to make things gentler for you."
+   - Verified: appears in onboarding flow, selections toggle correctly.
+
+3. Companion Creature Polish (Health world):
+   - Added 6 floating sparkle particles around the creature (twinkle animation, color-coded by stage: sage for early stages, amber for grown+).
+   - Particles have glow boxShadow for a magical feel.
+   - Existing wobble + blink + petal animations + halo glow + float retained.
+   - VLM rated 8/10 (improved charm).
+
+Stage Summary:
+- 3 major features shipped: 3 new simulations (photosynthesis, gravity, circuits), sensory profile questionnaire, companion creature sparkles.
+- Learn world Simulations tab now has 6 interactive sims covering science + math concepts.
+- Onboarding now has 6 steps (added Sensory between Safety and Twin) for deeper personalization.
+- Companion creature is more charming with floating sparkles.
+- Lint clean, no page errors.
+- Total AI routes: 9 (companion, learn, reflection, twin, tts, asr, illustrate, concepts, summary).
+
+Current project status: ENHANCED with 6 interactive simulations, sensory personalization, and a more charming companion.
+Unresolved / next-phase recommendations:
+- Add generated imagery for empty states (Growth forest, galaxy, backpack).
+- Persist twin memories + study items + health logs to Prisma for cross-device continuity.
+- Add a parent/educator companion view (read-only dashboard).
+- Add more simulation types (chemical reactions, circuits with resistors, wave interference).
+- Apply sensory profile to auto-adjust app settings (e.g. if "bright lights" selected, suggest calm mode).
