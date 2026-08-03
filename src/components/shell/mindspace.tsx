@@ -21,6 +21,7 @@ import { AccessibilityToolbar } from "@/components/shared/accessibility-toolbar"
 import { CompanionDock } from "@/components/shared/companion-dock";
 import { ShortcutsHelp } from "@/components/shared/shortcuts-help";
 import { IdleCheckIn } from "@/components/shared/idle-check-in";
+import { SensoryAdapter } from "@/components/shared/sensory-adapter";
 import { useKeyboardShortcuts } from "@/components/shared/use-keyboard-shortcuts";
 import { useApp, type World } from "@/store/app";
 import { useTwin } from "@/store/twin";
@@ -215,6 +216,7 @@ export function MindSpace() {
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               className="min-h-[calc(100vh-3.5rem)] pb-28 sm:pb-24"
             >
+              <SensoryAdapter />
               {activeKey === "learn" && <LearnWorld />}
               {activeKey === "wellness" && <WellnessWorld />}
               {activeKey === "health" && <HealthWorld />}

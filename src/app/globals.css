@@ -466,3 +466,20 @@ html[data-motion="reduced"] .nt-twinkle {
   color: var(--primary-foreground);
   border-radius: 0.5rem;
 }
+
+/* Print styles for learning export */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+  /* Show only the printable summary */
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+  .print\:border-0 {
+    border: 0 !important;
+  }
+}

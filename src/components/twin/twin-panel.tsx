@@ -20,6 +20,7 @@ import { TwinTimeline } from "./twin-timeline";
 import { ProfileCards } from "./profile-cards";
 import { MoodSelector } from "./mood-selector";
 import { InsightCard } from "./insight-card";
+import { LearningExport } from "@/components/shared/learning-export";
 
 export default function TwinPanel() {
   const sessionId = useSessionId();
@@ -302,6 +303,11 @@ export default function TwinPanel() {
           </div>
           <ProfileCards profile={profile} />
         </section>
+      </MotionDiv>
+
+      {/* Export summary */}
+      <MotionDiv variants={fadeUp} className="flex justify-center">
+        <LearningExport />
       </MotionDiv>
 
       {/* Footer promise */}

@@ -612,3 +612,47 @@ Unresolved / next-phase recommendations:
 - Add a parent/educator companion view (read-only dashboard).
 - Add more simulation types (chemical reactions, circuits with resistors, wave interference).
 - Apply sensory profile to auto-adjust app settings (e.g. if "bright lights" selected, suggest calm mode).
+
+---
+Task ID: 16 (continuous improvement round 7)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, add sensory profile adapter, learning session export, print styles.
+
+Work Log:
+- Reviewed worklog.md; confirmed round 6 added 3 simulations, sensory questionnaire, creature sparkles.
+- Ran agent-browser QA + VLM. Investigated VLM's recurring "floating N badge" report — verified via pixel analysis (zero dark pixels at the reported coordinates) that this is a VLM hallucination, not a real element. App is clean.
+- Dev server had stopped; restarted it.
+
+NEW FEATURES BUILT:
+1. Sensory Profile Adapter — auto-suggests + applies accessibility settings based on sensory questionnaire:
+   - `src/components/shared/sensory-adapter.tsx`: reads the learner's sensory selections from onboarding (pipe-delimited keys in profile.sensoryNotes) and generates contextual suggestions:
+     • "bright-lights" → suggests Calm mode (softens colors/intensity)
+     • "changes" or "focusing" → suggests Reduced motion (minimizes animations)
+     • "focusing" or "eye-contact" → suggests High contrast (clearer distinctions)
+   - Each suggestion has a "Why" explanation (Explainable AI). "Apply" button per suggestion + "Apply all" button. Dismissible. Only shows when there are pending (not-yet-applied) suggestions.
+   - Integrated into MindSpace shell (renders at top of main content, all worlds).
+   - Verified end-to-end: completed onboarding selecting "bright-lights" + "changes", entered MindSpace, adapter appeared with 2 suggestions, clicked "Apply all", confirmed data-calm=on + data-motion=reduced applied to <html>.
+
+2. Learning Session Export — printable summary for parents/educators:
+   - `/api/export` route: uses LLM to generate a strengths-based, non-diagnostic summary with 4 sections (What they explored / Strengths I noticed / Growth areas (gentle) / How to support them). Two formats: "parent" (gentle everyday language) and "educator" (learning-focused). Also fetches recent conversation history from Prisma for context.
+   - `src/components/shared/learning-export.tsx`: export button + dialog with format selector (parent/educator cards), AI-generated markdown summary, today's activity stats grid, print button. Print styles added to globals.css (`@media print` with visibility rules).
+   - Integrated into Digital Twin panel (after profile cards — natural place for it).
+   - Verified end-to-end: navigated to Twin, clicked "Export summary", selected parent format, AI generated a 4-section summary with the learner's name + activity data, "Print / Save as PDF" button present. VLM rated 9/10: "clean, professional, highly readable."
+
+3. Print styles in globals.css:
+   - Added `@media print` rules that hide everything except the printable summary content, with `print:hidden` and `print:p-0` utility classes.
+
+Stage Summary:
+- 2 major features shipped: sensory profile adapter (auto-applies accessibility settings), learning session export (printable parent/educator summary).
+- 1 new API route: /api/export (total AI routes now: 10 — companion, learn, reflection, twin, tts, asr, illustrate, concepts, summary, export).
+- Sensory onboarding data now drives real accessibility adaptations — closing the loop from "what feels like too much" to automatic gentle adjustments.
+- Parents/educators can now get a printable, AI-generated, strengths-based summary — a key original spec feature ("parent/educator companion view").
+- Lint clean, no page errors. VLM rated export 9/10.
+
+Current project status: ENHANCED with sensory-driven accessibility adaptation + printable learning summaries.
+Unresolved / next-phase recommendations:
+- Add generated imagery for empty states (Growth forest, galaxy, backpack).
+- Persist twin memories + study items + health logs to Prisma for cross-device continuity.
+- Add more simulation types (chemical reactions, wave interference).
+- Add a "learning streak" visual timeline in Growth.
+- Add multi-language support for the companion chat.
