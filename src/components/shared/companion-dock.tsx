@@ -2,11 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Sparkles, X, Send, Loader2 } from "lucide-react";
+import { Sparkles, X, Send, Loader2, Volume2, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { VoiceInput } from "@/components/shared/voice-input";
+import { useTTS } from "@/components/shared/use-tts";
 import { useApp } from "@/store/app";
 import { useTwin } from "@/store/twin";
 import { useWellness } from "@/store/wellness";
@@ -47,6 +48,8 @@ export function CompanionDock({ feature }: { feature?: string }) {
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion() || a11y.motion === "reduced";
+
+  const tts = useTTS();
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 999999, behavior: "smooth" });
@@ -148,7 +151,12 @@ export function CompanionDock({ feature }: { feature?: string }) {
                   </div>
                 )}
                 {messages.map((m, i) => (
-                  <Bubble key={i} role={m.role}>
+                  <Bubble
+                    key={i}
+                    role={m.role}
+                    tts={tts}
+                    isLast={i === messages.length - 1}
+                  >
                     {m.content}
                   </Bubble>
                 ))}
@@ -204,13 +212,19 @@ export function CompanionDock({ feature }: { feature?: string }) {
 function Bubble({
   role,
   children,
+  tts,
+  isLast,
 }: {
   role: "user" | "assistant";
   children: React.ReactNode;
+  tts?: ReturnType<typeof useTTS>;
+  isLast?: boolean;
 }) {
   const isUser = role === "user";
+  const text = typeof children === "string" ? children : "";
+
   return (
-    <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
+    <div className={cn("flex flex-col gap-1", isUser ? "items-end" : "items-start")}>
       <div
         className={cn(
           "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
@@ -221,6 +235,31 @@ function Bubble({
       >
         {children}
       </div>
+      {!isUser && tts && text && (
+        <button
+          onClick={() => tts.speak(text)}
+          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] text-muted-foreground hover:text-primary transition-colors"
+          aria-label={
+            tts.activeText === text && (tts.isPlaying || tts.isLoading)
+              ? "Stop listening"
+              : "Listen to this reply"
+          }
+        >
+          {tts.activeText === text && tts.isLoading ? (
+            <>
+              <Loader2 className="size-3 animate-spin" /> preparing…
+            </>
+          ) : tts.activeText === text && tts.isPlaying ? (
+            <>
+              <Square className="size-3 fill-current" /> stop
+            </>
+          ) : (
+            <>
+              <Volume2 className="size-3" /> listen
+            </>
+          )}
+        </button>
+      )}
     </div>
   );
 }

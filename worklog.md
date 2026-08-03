@@ -417,3 +417,51 @@ Unresolved / next-phase recommendations:
 - Integrate Study Planner with Focus Timer for timed review sessions.
 - Add image generation for empty states across all worlds (Growth forest, Memory galaxy, etc.).
 - Add a "learning streak" celebration animation in the Growth world.
+
+---
+Task ID: 12 (continuous improvement round 3)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, add companion TTS voice output, timed review sessions, streak celebration, polish.
+
+Work Log:
+- Reviewed worklog.md; confirmed round 2 added ASR voice input, AI illustrations, AI concept relationships.
+- Ran agent-browser QA across all 5 screens + VLM visual analysis. Verified FAB clearance is working (bottom padding fix from round 1 confirmed). No critical bugs found.
+
+NEW FEATURES BUILT:
+1. Companion Chat Voice Output (TTS for AI replies) — fully conversational:
+   - `src/components/shared/use-tts.ts`: reusable `useTTS()` hook with `speak(text)`, `stop()`, chunked playback for long text (reuses /api/tts), state management (isPlaying, isLoading, activeText), audio element lifecycle cleanup.
+   - Integrated into `companion-dock.tsx`: every assistant message now has a "listen" button below it. Clicking speaks the reply aloud via TTS; button toggles to "stop" while playing, "preparing…" while loading. Fully conversational: learner can SPEAK (ASR input) and HEAR (TTS output) — a complete voice conversation with their AI companion.
+   - Verified end-to-end: sent "Hi Nova, can you encourage me?" → AI replied → clicked "listen" → button changed to "Stop listening" → TTS audio played.
+
+2. Timed Review Sessions (Study Planner + Focus Timer integration):
+   - `src/components/learn/focused-review.tsx`: a focused review session component that guides learners through due topics one at a time with a gentle timer. Features: duration picker (5/10/15/20 min), circular SVG progress timer with animated stroke, current topic card, "Got it" / "Skip" / "Pause" controls, progress badges (X/Y, N done), end-session-early option. On completion: logs a growth session, bumps focusWindow +4, retention +3, persistence +4, adds celebration memory, fires toast.
+   - Integrated into `study-planner.tsx` between the Revision Predictor and the Add-topic input.
+   - Shows due topics as a queue preview, empty state when nothing's due ("Nothing's due right now. You're all caught up. 🌱").
+   - Fixed React hooks ordering: moved `stop` + `finish` useCallback declarations before the timer useEffect that references them; used queueMicrotask for the finish call inside the interval to avoid setState-in-effect.
+
+3. Learning Streak Celebration (Growth world):
+   - `src/components/growth/streak-celebration.tsx`: a full-screen celebration overlay that triggers on streak milestones (Day 1, 3, 7, 14, 30). Features: animated flame icon with glow + spring entrance, big streak number with gradient text, milestone-specific message ("Day one. You showed up. 💚" / "Three days of showing up" / "A full week. That's real. 🌱" etc.), 12 ambient confetti particles animating outward in 4 calm colors, stats row (Confidence +5, Achievement Earned), dismiss button. Reduced-motion fallback (no confetti, no spring).
+   - Fires once per milestone (tracked via localStorage `neurotwin-streak-seen-{N}` + celebratedRef Set to avoid double-firing). Twin/growth tie-ins: adds celebration memory, bumps confidence +5, adds "{N}-Day Streak" achievement.
+   - Integrated into `growth-world.tsx` — renders globally in the Growth world.
+   - Verified: set a 1-day streak in health store, navigated to Growth, celebration overlay appeared with "Day one. You showed up. 💚" message. VLM rated 9/10.
+
+POLISH:
+- Companion dock bubbles: redesigned to flex-col layout so the "listen" button sits neatly below each assistant message.
+- Study Planner: added FocusedReview card with amber gradient, duration picker, due-topic queue preview.
+- Growth world: streak celebration adds a delightful emotional payoff for consistency.
+
+Stage Summary:
+- 3 major new features shipped: companion TTS voice output, timed review sessions, streak celebration.
+- 1 new shared hook: useTTS (reusable text-to-speech playback).
+- Companion chat is now fully conversational: voice IN (ASR) + voice OUT (TTS).
+- Study Planner is now actionable: learners can run guided timed review sessions.
+- Growth world celebrates consistency with a beautiful milestone overlay.
+- Lint clean, no page errors. VLM rated streak celebration 9/10.
+
+Current project status: ENHANCED with conversational AI (voice in + out), guided review sessions, and consistency celebrations.
+Unresolved / next-phase recommendations:
+- The React "unique key prop" warning appears in console (non-breaking) — investigate the exact source (likely a pre-existing list render).
+- Add generated imagery for empty states in Growth (forest, galaxy, backpack, timeline).
+- Persist twin memories + study items + health logs to Prisma for cross-device continuity.
+- Add a "learning summary" end-of-day reflection prompt.
+- Add keyboard shortcuts (e.g. Cmd+K for companion, Cmd+/ for topic search).

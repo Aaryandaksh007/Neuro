@@ -10,6 +10,7 @@ import FocusRiver from "./focus-river";
 import BackpackOfWins from "./backpack-of-wins";
 import AchievementTimeline from "./achievement-timeline";
 import FutureSelf from "./future-self";
+import { StreakCelebration } from "./streak-celebration";
 
 export default function GrowthWorld() {
   const setCompanionMood = useTwin((s) => s.setCompanionMood);
@@ -21,6 +22,7 @@ export default function GrowthWorld() {
 
   return (
     <div className="relative px-4 sm:px-6 lg:px-10 py-6 sm:py-10 max-w-7xl mx-auto">
+      <StreakCelebration />
       <MotionDiv variants={fadeUp} initial="hidden" animate="visible">
         <header className="mb-8 sm:mb-10">
           <p className="text-xs uppercase tracking-[0.18em] font-semibold text-plum/80 mb-2">

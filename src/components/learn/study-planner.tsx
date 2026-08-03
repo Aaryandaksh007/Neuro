@@ -32,6 +32,7 @@ import { useGrowth } from "@/store/growth";
 import { useApp } from "@/store/app";
 import { useToast } from "@/hooks/use-toast";
 import { MotionDiv, fadeUp, stagger } from "@/components/shared/motion";
+import { FocusedReview } from "./focused-review";
 import { cn } from "@/lib/utils";
 
 function relativeTime(ts: number): string {
@@ -180,6 +181,9 @@ export function StudyPlanner() {
           </Card>
         </MotionDiv>
       )}
+
+      {/* Focused Review Session */}
+      <FocusedReview />
 
       {/* Add topic */}
       <MotionDiv variants={fadeUp} initial="hidden" animate="visible">
