@@ -108,6 +108,43 @@ export function CalmRoom({ onClose }: CalmRoomProps) {
             }}
             transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
           />
+
+          {/* Gentle drifting particles — like floating dust or soft snow */}
+          {Array.from({ length: 16 }).map((_, i) => {
+            const colors = [
+              "oklch(0.9 0.04 80 / 0.5)",
+              "oklch(0.88 0.06 15 / 0.4)",
+              "oklch(0.85 0.08 155 / 0.4)",
+              "oklch(0.85 0.06 330 / 0.4)",
+            ];
+            const startX = (i * 67) % 100;
+            const drift = ((i * 23) % 30) - 15;
+            return (
+              <motion.span
+                key={i}
+                aria-hidden
+                className="absolute rounded-full"
+                style={{
+                  width: 2 + (i % 3),
+                  height: 2 + (i % 3),
+                  background: colors[i % colors.length],
+                  left: `${startX}%`,
+                  top: "-5%",
+                }}
+                animate={{
+                  y: ["-5vh", "105vh"],
+                  x: [0, drift, 0],
+                  opacity: [0, 0.8, 0.8, 0],
+                }}
+                transition={{
+                  duration: 12 + (i % 5) * 3,
+                  repeat: Infinity,
+                  delay: i * 1.2,
+                  ease: "linear",
+                }}
+              />
+            );
+          })}
         </>
       )}
 

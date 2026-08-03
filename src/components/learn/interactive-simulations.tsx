@@ -25,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MotionDiv, fadeUp } from "@/components/shared/motion";
 import { cn } from "@/lib/utils";
 
-type SimKey = "water-cycle" | "fractions" | "ph-scale" | "photosynthesis" | "gravity" | "circuits";
+type SimKey = "water-cycle" | "fractions" | "ph-scale" | "photosynthesis" | "gravity" | "circuits" | "waves" | "chemistry";
 
 interface SimDef {
   key: SimKey;
@@ -70,6 +70,18 @@ const SIMS: SimDef[] = [
     label: "Circuits",
     icon: Zap,
     desc: "Build a path for electricity",
+  },
+  {
+    key: "waves",
+    label: "Waves",
+    icon: Droplet,
+    desc: "See waves interfere",
+  },
+  {
+    key: "chemistry",
+    label: "Chemistry",
+    icon: FlaskConical,
+    desc: "Mix elements, see reactions",
   },
 ];
 
@@ -129,6 +141,12 @@ export function InteractiveSimulations() {
             </TabsContent>
             <TabsContent value="circuits" className="mt-4 outline-none">
               <CircuitSim />
+            </TabsContent>
+            <TabsContent value="waves" className="mt-4 outline-none">
+              <WaveSim reduced={reduced} />
+            </TabsContent>
+            <TabsContent value="chemistry" className="mt-4 outline-none">
+              <ChemistrySim />
             </TabsContent>
           </Tabs>
         </div>
@@ -871,6 +889,259 @@ function CircuitSim() {
       <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
         Electricity needs a complete loop. Tap any part to break or fix it. The
         bulb only lights when the whole circuit is connected.
+      </p>
+    </div>
+  );
+}
+
+/* ===================== Wave Interference Simulation ===================== */
+function WaveSim({ reduced }: { reduced: boolean | null }) {
+  const [freq1, setFreq1] = useState(2);
+  const [freq2, setFreq2] = useState(3);
+  const [amp1, setAmp1] = useState(20);
+  const [amp2, setAmp2] = useState(15);
+  const [phase, setPhase] = useState(0);
+  const twin = useTwin((s) => s.bumpTrait);
+
+  useEffect(() => {
+    twin("curiosity", 1, "Explored the wave interference simulation.");
+  }, [twin]);
+
+  useEffect(() => {
+    if (reduced) return;
+    const interval = setInterval(() => {
+      setPhase((p) => (p + 0.08) % (Math.PI * 2));
+    }, 40);
+    return () => clearInterval(interval);
+  }, [reduced]);
+
+  // Generate wave points
+  const width = 280;
+  const height = 120;
+  const points = 80;
+  const wave1Points: string[] = [];
+  const wave2Points: string[] = [];
+  const combinedPoints: string[] = [];
+
+  for (let i = 0; i <= points; i++) {
+    const x = (i / points) * width;
+    const t = (i / points) * Math.PI * 4;
+    const y1 = height / 2 + amp1 * Math.sin(freq1 * t + phase);
+    const y2 = height / 2 + amp2 * Math.sin(freq2 * t + phase * 1.2);
+    const yc = height / 2 + (y1 - height / 2) + (y2 - height / 2);
+    wave1Points.push(`${x},${y1}`);
+    wave2Points.push(`${x},${y2}`);
+    combinedPoints.push(`${x},${yc}`);
+  }
+
+  return (
+    <div>
+      <div className="rounded-xl border border-border/40 bg-muted/20 p-4">
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-32">
+          {/* Center line */}
+          <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="oklch(0.8 0.01 150)" strokeWidth="0.5" strokeDasharray="2 2" />
+          {/* Wave 1 */}
+          <polyline
+            points={wave1Points.join(" ")}
+            fill="none"
+            stroke="oklch(0.74 0.12 155 / 0.5)"
+            strokeWidth="2"
+          />
+          {/* Wave 2 */}
+          <polyline
+            points={wave2Points.join(" ")}
+            fill="none"
+            stroke="oklch(0.82 0.13 80 / 0.5)"
+            strokeWidth="2"
+          />
+          {/* Combined */}
+          <polyline
+            points={combinedPoints.join(" ")}
+            fill="none"
+            stroke="oklch(0.7 0.13 330)"
+            strokeWidth="2.5"
+          />
+        </svg>
+        <div className="flex items-center justify-center gap-4 mt-2 text-[10px]">
+          <span className="flex items-center gap-1"><span className="size-2 rounded-full" style={{background:"oklch(0.74 0.12 155 / 0.7)"}} /> Wave 1</span>
+          <span className="flex items-center gap-1"><span className="size-2 rounded-full" style={{background:"oklch(0.82 0.13 80 / 0.7)"}} /> Wave 2</span>
+          <span className="flex items-center gap-1"><span className="size-2 rounded-full" style={{background:"oklch(0.7 0.13 330)"}} /> Combined</span>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <SliderRow label="Wave 1 freq" value={freq1} onChange={setFreq1} color="oklch(0.74 0.12 155)" icon={<Cloud className="size-3.5" />} />
+        <SliderRow label="Wave 2 freq" value={freq2} onChange={setFreq2} color="oklch(0.82 0.13 80)" icon={<Sun className="size-3.5" />} />
+        <SliderRow label="Wave 1 amp" value={amp1} onChange={setAmp1} color="oklch(0.74 0.12 155)" icon={<ArrowUp className="size-3.5" />} />
+        <SliderRow label="Wave 2 amp" value={amp2} onChange={setAmp2} color="oklch(0.82 0.13 80)" icon={<ArrowUp className="size-3.5" />} />
+      </div>
+      <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+        When two waves meet, they add together. Same direction = bigger
+        (constructive). Opposite = cancel out (destructive). That&apos;s
+        interference.
+      </p>
+    </div>
+  );
+}
+
+/* ===================== Chemistry Reaction Simulation ===================== */
+function ChemistrySim() {
+  const [elemA, setElemA] = useState<"H" | "Na" | "Fe" | "C">("H");
+  const [elemB, setElemB] = useState<"O" | "Cl" | "S" | "O">("O");
+  const [mixed, setMixed] = useState(false);
+  const twin = useTwin((s) => s.bumpTrait);
+  const reduced = useReducedMotion();
+
+  useEffect(() => {
+    twin("curiosity", 1, "Explored the chemistry simulation.");
+  }, [twin]);
+
+  const REACTIONS: Record<string, { product: string; name: string; color: string; desc: string }> = {
+    "H+O": { product: "H₂O", name: "Water", color: "oklch(0.7 0.1 200)", desc: "Two hydrogens + one oxygen = the stuff of life." },
+    "Na+Cl": { product: "NaCl", name: "Table Salt", color: "oklch(0.9 0.01 60)", desc: "A metal + a toxic gas = the salt on your food." },
+    "Fe+S": { product: "FeS", name: "Iron Sulfide", color: "oklch(0.4 0.02 40)", desc: "A dark, smelly compound — very different from its parts." },
+    "C+O": { product: "CO₂", name: "Carbon Dioxide", color: "oklch(0.6 0.05 150)", desc: "What you breathe out. Plants breathe it in." },
+  };
+
+  const key = `${elemA}+${elemB}`;
+  const reaction = REACTIONS[key];
+
+  const ELEMENT_COLORS: Record<string, string> = {
+    H: "oklch(0.7 0.1 200)",
+    Na: "oklch(0.78 0.08 15)",
+    Fe: "oklch(0.55 0.05 40)",
+    C: "oklch(0.3 0.02 60)",
+    O: "oklch(0.65 0.15 25)",
+    Cl: "oklch(0.7 0.1 150)",
+    S: "oklch(0.8 0.14 90)",
+  };
+
+  return (
+    <div>
+      <div className="rounded-xl border border-border/40 bg-muted/20 p-6">
+        <div className="flex items-center justify-center gap-4">
+          {/* Element A */}
+          <div
+            className="size-16 rounded-2xl flex items-center justify-center text-2xl font-bold border-2"
+            style={{
+              background: `${ELEMENT_COLORS[elemA]}30`,
+              borderColor: ELEMENT_COLORS[elemA],
+              color: ELEMENT_COLORS[elemA],
+            }}
+          >
+            {elemA}
+          </div>
+
+          {/* Plus / Arrow */}
+          <div className="text-2xl text-muted-foreground">
+            {mixed && reaction ? "→" : "+"}
+          </div>
+
+          {/* Element B */}
+          <div
+            className="size-16 rounded-2xl flex items-center justify-center text-2xl font-bold border-2"
+            style={{
+              background: `${ELEMENT_COLORS[elemB]}30`,
+              borderColor: ELEMENT_COLORS[elemB],
+              color: ELEMENT_COLORS[elemB],
+            }}
+          >
+            {elemB}
+          </div>
+
+          {/* Product */}
+          {mixed && reaction && (
+            <motion.div
+              initial={reduced ? false : { opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="size-20 rounded-2xl flex flex-col items-center justify-center border-2"
+              style={{
+                background: `${reaction.color}30`,
+                borderColor: reaction.color,
+                color: reaction.color,
+              }}
+            >
+              <span className="text-xl font-bold">{reaction.product}</span>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Result label */}
+        {mixed && reaction && (
+          <motion.div
+            initial={reduced ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-4 text-center"
+          >
+            <p className="text-sm font-semibold" style={{ color: reaction.color }}>
+              {reaction.name}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+              {reaction.desc}
+            </p>
+          </motion.div>
+        )}
+
+        {mixed && !reaction && (
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            Hmm, that combination doesn&apos;t have a known reaction here. Try
+            another pair!
+          </p>
+        )}
+      </div>
+
+      {/* Element selectors */}
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div>
+          <p className="text-xs text-muted-foreground mb-1.5">Element A</p>
+          <div className="flex gap-1.5">
+            {(["H", "Na", "Fe", "C"] as const).map((e) => (
+              <button
+                key={e}
+                onClick={() => { setElemA(e); setMixed(false); }}
+                aria-pressed={elemA === e}
+                className={cn(
+                  "flex-1 rounded-lg border py-2 text-sm font-bold transition-all",
+                  elemA === e ? "border-primary bg-primary/10 text-primary" : "hover:bg-accent"
+                )}
+              >
+                {e}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground mb-1.5">Element B</p>
+          <div className="flex gap-1.5">
+            {(["O", "Cl", "S"] as const).map((e) => (
+              <button
+                key={e}
+                onClick={() => { setElemB(e); setMixed(false); }}
+                aria-pressed={elemB === e}
+                className={cn(
+                  "flex-1 rounded-lg border py-2 text-sm font-bold transition-all",
+                  elemB === e ? "border-primary bg-primary/10 text-primary" : "hover:bg-accent"
+                )}
+              >
+                {e}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Button
+        onClick={() => setMixed(true)}
+        disabled={mixed}
+        className="mt-4 w-full rounded-full gap-1.5"
+        size="sm"
+      >
+        <FlaskConical className="size-3.5" /> Mix them
+      </Button>
+      <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+        Elements combine to form completely new substances. The result has
+        properties nothing like its parts.
       </p>
     </div>
   );

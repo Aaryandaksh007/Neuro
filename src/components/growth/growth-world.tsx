@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Trees, Star, Gauge, Waves, Backpack, Award, TrendingUp } from "lucide-react";
+import { Trees, Star, Gauge, Waves, Backpack, Award, TrendingUp, Flame } from "lucide-react";
 import { useTwin } from "@/store/twin";
 import { MotionDiv, fadeUp, stagger } from "@/components/shared/motion";
 import GrowthForest from "./growth-forest";
@@ -12,6 +12,7 @@ import BackpackOfWins from "./backpack-of-wins";
 import AchievementTimeline from "./achievement-timeline";
 import FutureSelf from "./future-self";
 import { StreakCelebration } from "./streak-celebration";
+import { StreakTimeline } from "./streak-timeline";
 import { cn } from "@/lib/utils";
 
 interface Section {
@@ -25,6 +26,7 @@ const SECTIONS: Section[] = [
   { id: "galaxy", label: "Galaxy", icon: Star },
   { id: "meters", label: "Qualities", icon: Gauge },
   { id: "river", label: "River", icon: Waves },
+  { id: "streak", label: "Streak", icon: Flame },
   { id: "backpack", label: "Backpack", icon: Backpack },
   { id: "timeline", label: "Timeline", icon: Award },
   { id: "future", label: "Future", icon: TrendingUp },
@@ -134,6 +136,10 @@ export default function GrowthWorld() {
             <FocusRiver />
           </MotionDiv>
         </div>
+
+        <MotionDiv variants={fadeUp} id="streak" className="scroll-mt-32">
+          <StreakTimeline />
+        </MotionDiv>
 
         <MotionDiv variants={fadeUp} id="backpack" className="scroll-mt-32">
           <BackpackOfWins />

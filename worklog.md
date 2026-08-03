@@ -656,3 +656,44 @@ Unresolved / next-phase recommendations:
 - Add more simulation types (chemical reactions, wave interference).
 - Add a "learning streak" visual timeline in Growth.
 - Add multi-language support for the companion chat.
+
+---
+Task ID: 17 (continuous improvement round 8)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, add wave/chemistry simulations, streak timeline, calm room particles.
+
+Work Log:
+- Reviewed worklog.md; confirmed round 7 added sensory adapter + learning export.
+- Ran agent-browser QA. App clean, no errors. Dev server running.
+
+NEW FEATURES BUILT:
+1. Two new interactive simulations (Wave Interference + Chemistry):
+   - Wave Interference: animated SVG showing two sine waves + their combined waveform. Sliders for frequency (1-5) and amplitude (5-30) of each wave. Real-time visualization of constructive/destructive interference. Animated phase progression. Color-coded (sage=wave1, amber=wave2, plum=combined).
+   - Chemistry: element selector (H/Na/Fe/C + O/Cl/S) with "Mix them" button. 4 known reactions (H+O→H₂O Water, Na+Cl→NaCl Salt, Fe+S→FeS Iron Sulfide, C+O→CO₂ Carbon Dioxide) with spring-animated product reveal + educational descriptions. Unknown combinations get a gentle "try another pair" message.
+   - Total simulations now: 8 (water cycle, fractions, pH, photosynthesis, gravity, circuits, waves, chemistry).
+   - Verified both render + are interactive. Chemistry "Mix them" produces correct reaction.
+
+2. Learning Streak Visual Timeline (Growth world):
+   - `src/components/growth/streak-timeline.tsx`: 14-day visual timeline showing active days as filled amber circles with checkmarks, inactive as empty circles. Animated connecting gradient line (amber→rose) fills based on active proportion. Today is highlighted with a ring. Days with 3+ care actions get a twinkle star. Current streak badge + active count badge. Adaptive encouraging message based on streak length (0 days → "begins with one step", 7+ days → "your future self is grateful").
+   - Integrated into Growth world as a new "Streak" section in the sub-navigation (between River and Backpack).
+   - VLM rated 9/10: "clean UI, clear data visualization, legible typography."
+
+3. Calm Room ambient particles (Wellness):
+   - Enhanced the Calm Room overlay with 16 gentle drifting particles (like floating dust/soft snow) in 4 calm colors. Particles drift from top to bottom with horizontal sway + fade in/out. Staggered delays for organic feel.
+   - Retained existing aurora gradient + 3 floating orbs + breathing heart + "You're safe here" message.
+   - Reduced-motion respected (particles only animate when motion is full).
+
+Stage Summary:
+- 3 major features shipped: 2 new simulations (waves, chemistry), streak timeline, calm room particles.
+- Learn world Simulations tab now has 8 interactive sims.
+- Growth world now has 8 sections (added Streak between River and Backpack).
+- Calm Room is more immersive with ambient particle drift.
+- Lint clean, no page errors. VLM rated streak timeline 9/10.
+
+Current project status: ENHANCED with 8 simulations, visual streak timeline, and a more immersive calm room.
+Unresolved / next-phase recommendations:
+- Add generated imagery for empty states (Growth forest, galaxy, backpack).
+- Persist twin memories + study items + health logs to Prisma for cross-device continuity.
+- Add multi-language support for the companion chat.
+- Add a "sensory-friendly mode" that auto-reduces all animations globally.
+- Add more chemistry reactions + a molecule builder.
