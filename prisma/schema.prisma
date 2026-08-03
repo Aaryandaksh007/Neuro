@@ -1,0 +1,41 @@
+// NeuroTwin OS — Prisma schema
+// SQLite. Used for AI conversation memory + reflection journal persistence.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  sessionId String
+  role      String   // user | assistant
+  content   String
+  context   String?  // optional JSON: which feature / twin snapshot
+  createdAt DateTime @default(now())
+
+  @@index([sessionId, createdAt])
+}
+
+model Reflection {
+  id        String   @id @default(cuid())
+  sessionId String
+  text      String
+  mood      String?
+  energy    Int?
+  createdAt DateTime @default(now())
+}
+
+model LearningSession {
+  id        String   @id @default(cuid())
+  sessionId String
+  topic     String
+  style     String
+  format    String   // story | visual | comic | flowchart | analogy
+  summary   String
+  createdAt DateTime @default(now())
+}

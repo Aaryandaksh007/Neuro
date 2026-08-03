@@ -1,0 +1,468 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* OpenDyslexic — loaded from CDN for dyslexia-friendly mode */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("https://cdn.jsdelivr.net/npm/@openfonts/opendyslexic_latin@1.44.2/files/opendyslexic-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("https://cdn.jsdelivr.net/npm/@openfonts/opendyslexic_latin@1.44.2/files/opendyslexic-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   NeuroTwin OS — Design System
+   Calm. Premium. Accessibility-first.
+   Palette: sage/emerald (growth) + warm amber (energy) +
+            soft rose (wellness) + grounded neutrals.
+   No blue/indigo primary. Designed to feel emotionally safe.
+   ============================================================ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+  --font-dyslexic: var(--font-opendyslexic);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* NeuroTwin semantic accents */
+  --color-sage: var(--sage);
+  --color-sage-foreground: var(--sage-foreground);
+  --color-amber-glow: var(--amber-glow);
+  --color-amber-glow-foreground: var(--amber-glow-foreground);
+  --color-rose-soft: var(--rose-soft);
+  --color-rose-soft-foreground: var(--rose-soft-foreground);
+  --color-plum: var(--plum);
+  --color-plum-foreground: var(--plum-foreground);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+}
+
+:root {
+  --radius: 0.875rem;
+  --font-opendyslexic: "OpenDyslexic";
+
+  /* Calm light canvas — warm off-white */
+  --background: oklch(0.985 0.006 120);
+  --foreground: oklch(0.22 0.02 160);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.02 160);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.02 160);
+
+  /* Primary = sage/emerald (growth, calm) */
+  --primary: oklch(0.62 0.11 155);
+  --primary-foreground: oklch(0.99 0.01 150);
+
+  --secondary: oklch(0.96 0.012 140);
+  --secondary-foreground: oklch(0.3 0.03 160);
+
+  --muted: oklch(0.965 0.008 130);
+  --muted-foreground: oklch(0.5 0.02 150);
+
+  --accent: oklch(0.95 0.02 95);
+  --accent-foreground: oklch(0.32 0.05 80);
+
+  --destructive: oklch(0.6 0.2 25);
+  --border: oklch(0.9 0.01 140);
+  --input: oklch(0.92 0.01 140);
+  --ring: oklch(0.62 0.11 155);
+
+  /* Semantic accents */
+  --sage: oklch(0.7 0.1 155);
+  --sage-foreground: oklch(0.16 0.03 160);
+  --amber-glow: oklch(0.82 0.13 80);
+  --amber-glow-foreground: oklch(0.28 0.06 70);
+  --rose-soft: oklch(0.78 0.08 15);
+  --rose-soft-foreground: oklch(0.3 0.06 20);
+  --plum: oklch(0.6 0.12 330);
+  --plum-foreground: oklch(0.98 0.01 330);
+
+  --chart-1: oklch(0.7 0.1 155);
+  --chart-2: oklch(0.82 0.13 80);
+  --chart-3: oklch(0.78 0.08 15);
+  --chart-4: oklch(0.6 0.12 330);
+  --chart-5: oklch(0.72 0.09 200);
+
+  --sidebar: oklch(0.975 0.006 130);
+  --sidebar-foreground: oklch(0.22 0.02 160);
+  --sidebar-primary: oklch(0.62 0.11 155);
+  --sidebar-primary-foreground: oklch(0.99 0.01 150);
+  --sidebar-accent: oklch(0.95 0.015 130);
+  --sidebar-accent-foreground: oklch(0.3 0.03 160);
+  --sidebar-border: oklch(0.9 0.01 140);
+  --sidebar-ring: oklch(0.62 0.11 155);
+}
+
+.dark {
+  --background: oklch(0.16 0.012 165);
+  --foreground: oklch(0.95 0.01 150);
+  --card: oklch(0.205 0.014 165);
+  --card-foreground: oklch(0.95 0.01 150);
+  --popover: oklch(0.205 0.014 165);
+  --popover-foreground: oklch(0.95 0.01 150);
+
+  --primary: oklch(0.74 0.12 155);
+  --primary-foreground: oklch(0.16 0.03 160);
+
+  --secondary: oklch(0.26 0.016 160);
+  --secondary-foreground: oklch(0.92 0.01 150);
+
+  --muted: oklch(0.24 0.014 160);
+  --muted-foreground: oklch(0.68 0.02 150);
+
+  --accent: oklch(0.3 0.04 80);
+  --accent-foreground: oklch(0.92 0.03 80);
+
+  --destructive: oklch(0.68 0.19 22);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.74 0.12 155);
+
+  --sage: oklch(0.74 0.12 155);
+  --sage-foreground: oklch(0.16 0.03 160);
+  --amber-glow: oklch(0.82 0.13 80);
+  --amber-glow-foreground: oklch(0.16 0.03 80);
+  --rose-soft: oklch(0.74 0.1 15);
+  --rose-soft-foreground: oklch(0.16 0.03 20);
+  --plum: oklch(0.7 0.13 330);
+  --plum-foreground: oklch(0.16 0.03 330);
+
+  --chart-1: oklch(0.74 0.12 155);
+  --chart-2: oklch(0.82 0.13 80);
+  --chart-3: oklch(0.74 0.1 15);
+  --chart-4: oklch(0.7 0.13 330);
+  --chart-5: oklch(0.74 0.1 200);
+
+  --sidebar: oklch(0.19 0.013 165);
+  --sidebar-foreground: oklch(0.95 0.01 150);
+  --sidebar-primary: oklch(0.74 0.12 155);
+  --sidebar-primary-foreground: oklch(0.16 0.03 160);
+  --sidebar-accent: oklch(0.26 0.016 160);
+  --sidebar-accent-foreground: oklch(0.92 0.01 150);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.74 0.12 155);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Focus visibility — WCAG AAA */
+  :focus-visible {
+    @apply outline-none ring-[3px] ring-ring/70 ring-offset-2 ring-offset-background;
+  }
+
+  /* Selection */
+  ::selection {
+    background: oklch(0.74 0.12 155 / 0.25);
+  }
+
+  /* Custom scrollbar — calm and subtle */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.7 0.02 150 / 0.35);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.62 0.11 155 / 0.55);
+    background-clip: content-box;
+  }
+}
+
+/* ============================================================
+   Accessibility modes (toggled via data attributes on <html>)
+   ============================================================ */
+
+/* Dyslexia-friendly font */
+html[data-font="dyslexic"] body,
+html[data-font="dyslexic"] input,
+html[data-font="dyslexic"] textarea,
+html[data-font="dyslexic"] button {
+  font-family: var(--font-opendyslexic), var(--font-inter), sans-serif !important;
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+}
+
+/* Larger line height for readability */
+html[data-font="dyslexic"] p,
+html[data-font="dyslexic"] li,
+html[data-font="dyslexic"] label {
+  line-height: 1.85;
+}
+
+/* Font scale */
+html[data-scale="lg"] { font-size: 17.5px; }
+html[data-scale="xl"] { font-size: 19.5px; }
+html[data-scale="xxl"] { font-size: 22px; }
+
+/* Reduced motion */
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* High contrast mode */
+html[data-contrast="high"] {
+  --border: oklch(0.1 0 0 / 30%);
+  --muted-foreground: oklch(0.35 0.02 150);
+  --input: oklch(0.85 0.01 140);
+}
+html[data-contrast="high"].dark {
+  --border: oklch(1 0 0 / 35%);
+  --muted-foreground: oklch(0.82 0.02 150);
+  --input: oklch(1 0 0 / 25%);
+}
+html[data-contrast="high"] * {
+  text-shadow: none !important;
+}
+
+/* Calm mode — reduces visual intensity when overwhelmed */
+html[data-calm="on"] .nt-intense {
+  filter: saturate(0.7) brightness(0.98);
+}
+html[data-calm="on"] .nt-motion-bg {
+  animation: none !important;
+}
+
+/* ============================================================
+   Utility helpers
+   ============================================================ */
+
+/* Calm gradient surfaces */
+.nt-gradient-sage {
+  background:
+    radial-gradient(120% 120% at 0% 0%, oklch(0.74 0.12 155 / 0.16), transparent 50%),
+    radial-gradient(120% 120% at 100% 100%, oklch(0.82 0.13 80 / 0.12), transparent 50%);
+}
+.nt-gradient-rose {
+  background:
+    radial-gradient(120% 120% at 0% 0%, oklch(0.78 0.08 15 / 0.14), transparent 55%),
+    radial-gradient(120% 120% at 100% 0%, oklch(0.7 0.1 155 / 0.1), transparent 50%);
+}
+.nt-gradient-amber {
+  background:
+    radial-gradient(120% 120% at 100% 0%, oklch(0.82 0.13 80 / 0.18), transparent 55%),
+    radial-gradient(120% 120% at 0% 100%, oklch(0.6 0.12 330 / 0.08), transparent 50%);
+}
+.nt-gradient-plum {
+  background:
+    radial-gradient(120% 120% at 50% 0%, oklch(0.6 0.12 330 / 0.14), transparent 55%),
+    radial-gradient(120% 120% at 0% 100%, oklch(0.7 0.1 155 / 0.1), transparent 50%);
+}
+
+/* Glass card */
+.nt-glass {
+  background: oklch(1 0 0 / 0.6);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+.dark .nt-glass {
+  background: oklch(0.205 0.014 165 / 0.6);
+}
+
+/* Soft elevated shadow */
+.nt-shadow-soft {
+  box-shadow:
+    0 1px 2px oklch(0.16 0.02 160 / 0.04),
+    0 8px 24px -8px oklch(0.16 0.02 160 / 0.08),
+    0 2px 6px -2px oklch(0.16 0.02 160 / 0.04);
+}
+.dark .nt-shadow-soft {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 0.3),
+    0 8px 24px -8px oklch(0 0 0 / 0.4);
+}
+
+/* Animated aurora background */
+.nt-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.nt-aurora::before,
+.nt-aurora::after {
+  content: "";
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  animation: nt-drift 22s ease-in-out infinite alternate;
+}
+.nt-aurora::before {
+  background: radial-gradient(circle, oklch(0.74 0.12 155 / 0.5), transparent 60%);
+  top: -20%;
+  left: -10%;
+}
+.nt-aurora::after {
+  background: radial-gradient(circle, oklch(0.82 0.13 80 / 0.4), transparent 60%);
+  bottom: -20%;
+  right: -10%;
+  animation-delay: -8s;
+}
+.dark .nt-aurora::before { opacity: 0.32; }
+.dark .nt-aurora::after { opacity: 0.26; }
+
+@keyframes nt-drift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(6%, 4%) scale(1.08); }
+  100% { transform: translate(-4%, -3%) scale(0.96); }
+}
+
+/* Gentle breathing animation */
+@keyframes nt-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+.nt-breathe {
+  animation: nt-breathe 6s ease-in-out infinite;
+}
+
+/* Shimmer skeleton */
+@keyframes nt-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.nt-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.7 0.02 150 / 0.12),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: nt-shimmer 1.6s ease-in-out infinite;
+}
+
+/* Slow float */
+@keyframes nt-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.nt-float { animation: nt-float 7s ease-in-out infinite; }
+
+/* Twinkle for galaxy */
+@keyframes nt-twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+.nt-twinkle { animation: nt-twinkle 3.5s ease-in-out infinite; }
+
+/* Soft pulse ring */
+@keyframes nt-pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.7; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.nt-pulse-ring { animation: nt-pulse-ring 2.4s ease-out infinite; }
+
+/* Reduced motion disables ambient animation */
+html[data-motion="reduced"] .nt-aurora::before,
+html[data-motion="reduced"] .nt-aurora::after,
+html[data-motion="reduced"] .nt-breathe,
+html[data-motion="reduced"] .nt-float,
+html[data-motion="reduced"] .nt-twinkle {
+  animation: none !important;
+}
+
+/* Skip link */
+.nt-skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 100;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  transition: top 0.2s;
+}
+.nt-skip-link:focus {
+  top: 1rem;
+}
+
+/* Screen-reader only */
+.sr-only-focusable:focus {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  clip: auto;
+  z-index: 100;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 0.5rem;
+}
