@@ -697,3 +697,33 @@ Unresolved / next-phase recommendations:
 - Add multi-language support for the companion chat.
 - Add a "sensory-friendly mode" that auto-reduces all animations globally.
 - Add more chemistry reactions + a molecule builder.
+
+---
+Task ID: 18 (continuous improvement round 9)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, add multi-language companion support, language selector.
+
+Work Log:
+- Reviewed worklog.md; confirmed round 8 added 2 simulations, streak timeline, calm room particles.
+- Ran agent-browser QA. Judge Mode rated 8.5/10 by VLM. App clean, no errors.
+
+NEW FEATURES BUILT:
+1. Multi-Language Companion Chat — 8 languages:
+   - `src/store/language.ts`: new Zustand store with 8 languages (English, Español, Français, Deutsch, 中文, 日本語, हिन्दी, Português) — each with flag emoji + label. Persisted.
+   - Updated `/api/companion` route: accepts `language` in context, adds a `LANGUAGE: Respond in {code}` instruction to the system prompt when non-English. Also instructs the AI to match the learner's language if they write in a different one.
+   - Updated `companion-dock.tsx`: added a Globe button (language selector) in the companion header next to the close button. Popover dropdown with all 8 languages (flag + label). Selected language highlighted. Passes language to the AI chat context.
+   - Verified end-to-end: opened companion, clicked Globe, selected Español, sent "Hola, ¿cómo estás?", AI replied in Spanish: "Hola, Sam. Estoy bien, gracias. ¿Cómo estás tú hoy? 😊". VLM rated 9/10.
+
+Stage Summary:
+- 1 major feature shipped: multi-language companion chat (8 languages).
+- The companion now speaks the learner's language — a significant accessibility + inclusion win for neurodivergent learners worldwide.
+- Language preference persists across sessions.
+- Lint clean, no page errors. VLM rated 9/10.
+
+Current project status: ENHANCED with multi-language companion support (8 languages).
+Unresolved / next-phase recommendations:
+- Add generated imagery for empty states (Growth forest, galaxy, backpack).
+- Persist twin memories + study items + health logs to Prisma for cross-device continuity.
+- Add a "sensory-friendly mode" that auto-reduces all animations globally.
+- Add more chemistry reactions + a molecule builder.
+- Localize the UI itself (buttons, labels) not just the companion chat.

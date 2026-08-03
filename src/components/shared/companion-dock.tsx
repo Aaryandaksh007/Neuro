@@ -2,16 +2,22 @@
 
 import { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Sparkles, X, Send, Loader2, Volume2, Square } from "lucide-react";
+import { Sparkles, X, Send, Loader2, Volume2, Square, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { VoiceInput } from "@/components/shared/voice-input";
 import { useTTS } from "@/components/shared/use-tts";
 import { useApp } from "@/store/app";
 import { useTwin } from "@/store/twin";
 import { useWellness } from "@/store/wellness";
 import { useAccessibility } from "@/store/accessibility";
+import { useLanguage, LANGUAGES } from "@/store/language";
 import { useAIChat } from "./use-ai-chat";
 import { useSessionId } from "./use-session-id";
 import { NeuroTwinLogo } from "./logo";
@@ -33,6 +39,8 @@ export function CompanionDock({ feature }: { feature?: string }) {
   const latestMood = useWellness((s) => s.moods[s.moods.length - 1]);
   const sessionId = useSessionId();
   const a11y = useAccessibility();
+  const language = useLanguage((s) => s.language);
+  const setLanguage = useLanguage((s) => s.setLanguage);
 
   const { messages, loading, send } = useAIChat({
     endpoint: "/api/companion",
@@ -42,6 +50,7 @@ export function CompanionDock({ feature }: { feature?: string }) {
       profile,
       feature,
       mood: latestMood?.mood,
+      language,
     },
   });
 
@@ -115,15 +124,52 @@ export function CompanionDock({ feature }: { feature?: string }) {
                   </p>
                 </div>
               </div>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="size-8"
-                onClick={() => setOpen(false)}
-                aria-label="Close companion"
-              >
-                <X className="size-4" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="size-8 gap-1"
+                      aria-label="Change language"
+                    >
+                      <Globe className="size-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="w-44 p-1.5">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold px-2 py-1.5">
+                      Companion language
+                    </p>
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => setLanguage(lang.code)}
+                        className={cn(
+                          "w-full flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors",
+                          language === lang.code
+                            ? "bg-primary/10 text-primary font-medium"
+                            : "hover:bg-accent"
+                        )}
+                      >
+                        <span className="text-base">{lang.flag}</span>
+                        <span>{lang.label}</span>
+                      </button>
+                    ))}
+                    <p className="text-[10px] text-muted-foreground px-2 py-1.5 mt-1 border-t">
+                      Your companion will reply in this language.
+                    </p>
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="size-8"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close companion"
+                >
+                  <X className="size-4" />
+                </Button>
+              </div>
             </div>
 
             {/* messages */}

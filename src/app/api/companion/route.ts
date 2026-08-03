@@ -13,6 +13,7 @@ interface CompanionBody {
     profile?: any;
     feature?: string;
     mood?: string;
+    language?: string;
   };
 }
 
@@ -50,6 +51,11 @@ export async function POST(req: NextRequest) {
     if (ctx.feature)
       twinLines.push(`Current screen: ${ctx.feature}. Tailor your help to it.`);
 
+    const langInstruction =
+      ctx.language && ctx.language !== "en"
+        ? `\n\nLANGUAGE: Respond in ${ctx.language} (ISO code). If the learner writes in a different language, match their language. Always keep the warm, gentle tone.`
+        : "";
+
     const system = `${SAFETY_PREAMBLE}
 
 ABOUT THIS LEARNER (use only to personalize, never to label or diagnose):
@@ -58,7 +64,7 @@ ${twinLines.join("\n") || "You are still getting to know this learner."}
 GUIDANCE:
 - Keep replies to 2-5 short sentences unless the learner asks for depth.
 - End with a gentle, low-pressure next step or an open question they can skip.
-- If they seem overwhelmed, slow down, validate, and offer a tiny option.`;
+- If they seem overwhelmed, slow down, validate, and offer a tiny option.${langInstruction}`;
 
     const history = body.history ?? [];
     const messages: ChatMessage[] = [
