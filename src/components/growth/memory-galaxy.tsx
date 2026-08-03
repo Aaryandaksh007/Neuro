@@ -249,12 +249,18 @@ export default function MemoryGalaxy() {
               animate={{ opacity: 1, scale: 1 }}
               className="text-center px-6"
             >
-              <div className="mx-auto mb-3 size-12 rounded-full bg-amber-glow/20 flex items-center justify-center">
-                <Sparkles className="size-6 text-amber-glow-foreground" />
+              <div className="relative mx-auto mb-4 size-16 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-amber-glow/30 blur-xl nt-breathe" />
+                <div className="relative size-14 rounded-full bg-gradient-to-br from-amber-glow/40 to-amber-glow/20 flex items-center justify-center border border-amber-glow/30">
+                  <Sparkles className="size-7 text-amber-50" />
+                </div>
               </div>
-              <p className="text-amber-100/70 text-sm max-w-xs">
-                Complete a lesson and a concept you master will become the first
-                star.
+              <p className="text-amber-50/90 text-sm font-medium max-w-xs">
+                Your sky is waiting for its first star
+              </p>
+              <p className="text-amber-100/60 text-xs max-w-xs mt-1.5">
+                Complete a lesson in Learn and a concept you master will light
+                up here.
               </p>
             </MotionDiv>
           </div>

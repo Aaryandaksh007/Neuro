@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useApp } from "@/store/app";
 import { useTwin } from "@/store/twin";
 import { useGrowth } from "@/store/growth";
+import { useStudy } from "@/store/study";
 import { useToast } from "@/hooks/use-toast";
 import { useSessionId } from "@/components/shared/use-session-id";
 
@@ -53,6 +54,7 @@ export function useLearn() {
   const addMemory = useTwin((s) => s.addMemory);
   const setCompanionMood = useTwin((s) => s.setCompanionMood);
   const addStar = useGrowth((s) => s.addStar);
+  const addStudyItem = useStudy((s) => s.addItem);
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
@@ -94,6 +96,8 @@ export function useLearn() {
           kind: "observation",
         });
         addStar({ concept: cleanTopic, constellation: "Learn", brightness: 40 });
+        // Also add to the Study Planner so the learner gets a spaced-repetition reminder
+        addStudyItem(cleanTopic);
         setCompanionMood("attentive");
 
         toast({
@@ -123,6 +127,7 @@ export function useLearn() {
       bumpTrait,
       addMemory,
       addStar,
+      addStudyItem,
       setCompanionMood,
       toast,
     ]

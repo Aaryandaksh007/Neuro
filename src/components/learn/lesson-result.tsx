@@ -6,6 +6,7 @@ import { Lightbulb, Sparkles, FileText } from "lucide-react";
 import { MotionDiv } from "@/components/shared/motion";
 import { Flashcards } from "./flashcards";
 import { AdaptiveQuiz } from "./adaptive-quiz";
+import { VoicePlayer } from "./voice-player";
 import type { LearnFormat, LearnResult } from "./use-learn";
 
 /** Split off a trailing "Why this helps you" line so we can render it as a callout. */
@@ -143,6 +144,7 @@ export function LessonResult({
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="space-y-4"
     >
+      <VoicePlayer text={body} label="Listen to this lesson" />
       <div className="max-h-[60vh] overflow-y-auto pr-1">
         <MarkdownBody>{body}</MarkdownBody>
       </div>

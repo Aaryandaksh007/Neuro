@@ -152,7 +152,32 @@ export function Landing() {
                   for neurodivergent learners. Safe. Seen. Calm. Empowered.
                 </p>
               </MotionDiv>
-              <MotionDiv variants={fadeUp} className="mt-9 flex flex-col sm:flex-row gap-3">
+
+              {/* Stats strip */}
+              <MotionDiv variants={fadeUp} className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
+                {[
+                  { v: "4", l: "Living worlds" },
+                  { v: "8", l: "Lesson formats" },
+                  { v: "6", l: "Accessibility modes" },
+                  { v: "AAA", l: "WCAG target" },
+                ].map((s, i) => (
+                  <div key={s.l} className="flex items-center gap-2">
+                    {i > 0 && (
+                      <span className="hidden sm:block h-8 w-px bg-border" aria-hidden />
+                    )}
+                    <div className="text-center">
+                      <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-plum bg-clip-text text-transparent tabular-nums">
+                        {s.v}
+                      </p>
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                        {s.l}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </MotionDiv>
+
+              <MotionDiv variants={fadeUp} className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Button size="lg" className="rounded-full text-base h-12 px-7" onClick={start}>
                   {onboarded ? "Open MindSpace" : "Create your Digital Twin"}
                   <ArrowRight className="size-4" />

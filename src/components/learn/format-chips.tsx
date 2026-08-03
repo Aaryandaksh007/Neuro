@@ -67,8 +67,8 @@ export function FormatChips({
               "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/60",
               "disabled:opacity-50 disabled:pointer-events-none",
               pressed
-                ? "border-primary/40 bg-primary text-primary-foreground shadow-sm"
-                : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-primary/5"
+                ? "border-primary bg-primary text-primary-foreground shadow-md ring-2 ring-primary/25 scale-[1.03]"
+                : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-primary/5 hover:-translate-y-0.5"
             )}
           >
             <Icon className="size-4 shrink-0" aria-hidden />

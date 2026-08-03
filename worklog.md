@@ -304,3 +304,65 @@ Unresolved / next-phase recommendations (for the cron agent):
 - Persist Digital Twin memories + health logs to Prisma for cross-device continuity (currently localStorage via Zustand).
 - Add a parent/educator companion view (read-only) for Judge Mode roadmap.
 - More micro-illustrations / generated imagery for empty states (image-generation skill available).
+
+---
+Task ID: 10 (continuous improvement round 1)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, fix bugs, add Voice Learning (TTS), Study Planner + Revision Predictor, Knowledge Graph, polish landing + empty states.
+
+Work Log:
+- Reviewed worklog.md; confirmed project was complete & verified from prior round.
+- Ran agent-browser QA across all 6 screens (landing, learn, wellness, health, growth, twin) + VLM visual analysis.
+- VLM identified issues:
+  1. Health: companion dock FAB overlapped content (critical)
+  2. Growth: Memory Galaxy empty state too faint/low contrast
+  3. Twin: timeline connector line too faint
+  4. Learn: format chips selected state needed stronger visual weight
+  5. Landing: needed more visual density in hero
+
+BUGS FIXED:
+- FAB overlap: added `pb-28 sm:pb-24` to MindSpace main content wrapper so all worlds have clearance for the floating companion launcher.
+- Memory Galaxy empty state: replaced faint icon with a larger glowing orb (size-14, gradient bg, border, blur halo, breathing animation) + brighter text (text-amber-50/90). Much higher contrast on the dark night-sky background.
+- Twin timeline connector: changed from `w-px from-primary/40 via-primary/25` to `w-0.5 rounded-full from-primary/60 via-primary/40 to-primary/10` — thicker and more visible.
+- Learn format chips: enhanced selected state with `shadow-md ring-2 ring-primary/25 scale-[1.03]` + hover lift on unselected (`hover:-translate-y-0.5`).
+
+NEW FEATURES BUILT:
+1. Voice Learning (TTS) — for auditory learners:
+   - `/api/tts` route: uses z-ai-web-dev-sdk audio.tts.create(), strips markdown, splits long text into ≤1000-char chunks (sentence-boundary aware), returns WAV audio with X-Chunk-Index/X-Chunk-Total headers for sequential playback. Initially used mp3 format but API rejected it (code 1214 "不支持当前response_format值"); switched to wav which works.
+   - `voice-player.tsx`: reusable audio player with play/pause/stop, chunked sequential playback for long lessons, voice selection (Warm/Calm/Clear = tongtong/xiaochen/kazi), speed slider (0.5-2.0×), progress bar, settings popover. Integrates with twin store (bumps visualPreference -1 for auditory engagement, adds memory). Respects reduced motion + calm mode.
+   - Integrated into `lesson-result.tsx`: VoicePlayer appears above every lesson body so learners can listen to any lesson.
+   - Verified end-to-end: generated a lesson, clicked Play, TTS API returned 200KB WAV audio, player showed Pause/Stop controls.
+
+2. Study Planner + Revision Predictor — spaced repetition:
+   - `src/store/study.ts`: StudyItem model (topic, reviewCount, confidence, nextReview, minutes), `computeNextReview()` using expanding intervals (1d,2d,4d,7d,12d,21d,34d,55d) adjusted by confidence. Zustand store with addItem/removeItem/reviewItem/dueToday/upcoming. Persisted.
+   - `study-planner.tsx`: Revision Predictor card (4 stats: topics tracked, revisited, avg confidence, est. retention % — with explainable-AI reasoning), add-topic input, "Gentle revisit" due-today list (amber-accented), "Coming up" upcoming list (scrollable), review dialog with confidence slider (0-100) that adjusts spacing. Twin/growth tie-ins: reviewing bumps retention+confidence traits, adds star, bumps persistence, adds celebration memory.
+   - Auto-integrated: completing a lesson in Adaptive Tutor now auto-adds the topic to the Study Planner (via useLearn hook).
+   - Fixed Zustand infinite-loop bug: `dueToday()`/`upcoming()` selectors returned new array refs each render → changed to select raw `items` and compute with `useMemo`.
+   - Verified: added "The water cycle" topic, predictor stats appeared, topic showed in "Coming up" section.
+
+3. Knowledge Graph / Mind Map — visual concept connections:
+   - `knowledge-graph.tsx`: interactive SVG node-link diagram. Concepts (from useGrowth.stars) are positioned by constellation group in a radial layout. Nodes are colored circles (14-34px based on brightness) with glow halos, persistent labels, and click-to-select. Edges connect nodes within groups and between adjacent groups. Legend bar shows group colors with counts. Empty state with glowing Network icon. Add-concept dialog with group selector (Learn/Revision/Ideas).
+   - Twin tie-in: adding a concept bumps curiosity trait + adds memory.
+   - Enhanced after VLM feedback: larger nodes (14-34px vs 8-24px), persistent labels (always visible, not just on hover), glow halos, constellation legend, thicker edge strokes.
+   - Verified: added "Photosynthesis" concept, 4 nodes rendered in 2 groups, legend showed "Learn (3)" and "Ideas (1)".
+
+4. Landing page enhancement:
+   - Added animated stats strip in hero: 4 stats (4 Living worlds, 8 Lesson formats, 6 Accessibility modes, AAA WCAG target) with gradient text and dividers. Adds visual weight and communicates key value props.
+
+LEARN WORLD TABS NOW: Adaptive Tutor | Learning DNA | Study Planner | Knowledge Graph | Memory Heatmap | Playground (6 tabs, up from 4).
+
+Stage Summary:
+- All QA issues from VLM feedback fixed (FAB overlap, empty state contrast, timeline connector, format chips).
+- 3 major new features shipped: Voice Learning (TTS), Study Planner + Revision Predictor, Knowledge Graph.
+- Learn world expanded from 4 to 6 tabs.
+- Cross-world integration enhanced: lessons auto-feed the Study Planner; Voice Player engages auditory learning + updates twin.
+- Lint clean, no runtime/console errors.
+- VLM ratings: Study Planner 9/10, Knowledge Graph 8/10, landing maintains premium quality.
+
+Current project status: ENHANCED & VERIFIED. Three major new features added on top of the complete foundation.
+Unresolved / next-phase recommendations:
+- Voice Learning: add ASR (speech-to-text) so learners can ask questions by voice.
+- Study Planner: integrate with the Focus Timer for timed review sessions.
+- Knowledge Graph: add AI-powered concept relationship suggestions ("You learned X and Y — they connect via Z").
+- Persist twin memories + study items to Prisma for cross-device continuity.
+- Add image generation for lesson illustrations (image-generation skill available).

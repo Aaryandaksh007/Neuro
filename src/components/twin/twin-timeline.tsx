@@ -107,7 +107,7 @@ export function TwinTimeline({
       {/* vertical line */}
       <div
         aria-hidden
-        className="absolute left-3 sm:left-4 top-2 bottom-2 w-px bg-gradient-to-b from-primary/40 via-primary/25 to-transparent"
+        className="absolute left-3 sm:left-4 top-2 bottom-2 w-0.5 rounded-full bg-gradient-to-b from-primary/60 via-primary/40 to-primary/10"
       />
 
       {sorted.map((m, i) => {

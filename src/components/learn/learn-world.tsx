@@ -6,6 +6,8 @@ import {
   Brain,
   Flame,
   Wand2,
+  CalendarClock,
+  Network,
   type LucideIcon,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,6 +17,8 @@ import { AdaptiveTutor } from "./adaptive-tutor";
 import { ConceptPlayground } from "./concept-playground";
 import { LearningDNAViz } from "./learning-dna-viz";
 import { MemoryHeatmap } from "./memory-heatmap";
+import { StudyPlanner } from "./study-planner";
+import { KnowledgeGraph } from "./knowledge-graph";
 
 interface TabDef {
   key: string;
@@ -35,6 +39,18 @@ const TABS: TabDef[] = [
     label: "Learning DNA",
     icon: Brain,
     hint: "See how your brain learns best",
+  },
+  {
+    key: "planner",
+    label: "Study Planner",
+    icon: CalendarClock,
+    hint: "When to revisit, perfectly spaced",
+  },
+  {
+    key: "graph",
+    label: "Knowledge Graph",
+    icon: Network,
+    hint: "How your ideas connect",
   },
   {
     key: "memory",
@@ -115,6 +131,12 @@ export default function LearnWorld() {
           </TabsContent>
           <TabsContent value="dna" className="mt-5 focus-visible:outline-none">
             <LearningDNAViz />
+          </TabsContent>
+          <TabsContent value="planner" className="mt-5 focus-visible:outline-none">
+            <StudyPlanner />
+          </TabsContent>
+          <TabsContent value="graph" className="mt-5 focus-visible:outline-none">
+            <KnowledgeGraph />
           </TabsContent>
           <TabsContent value="memory" className="mt-5 focus-visible:outline-none">
             <MemoryHeatmap />
