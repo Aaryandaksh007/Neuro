@@ -120,7 +120,27 @@ export function Landing() {
       <main id="main" className="relative z-10 flex-1 px-4 sm:px-6 lg:px-10">
         <div className="max-w-7xl mx-auto">
           {/* Hero */}
-          <section className="pt-12 sm:pt-20 pb-16 text-center">
+          <section className="relative pt-12 sm:pt-20 pb-16 text-center">
+            {/* Animated gradient mesh backdrop */}
+            {!reduced && (
+              <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden>
+                <motion.div
+                  className="absolute -top-20 left-1/4 size-96 rounded-full bg-primary/15 blur-3xl"
+                  animate={{ x: [0, 60, 0], y: [0, 40, 0], scale: [1, 1.15, 1] }}
+                  transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.div
+                  className="absolute top-10 right-1/4 size-80 rounded-full bg-amber-glow/12 blur-3xl"
+                  animate={{ x: [0, -50, 0], y: [0, 30, 0], scale: [1, 1.2, 1] }}
+                  transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.div
+                  className="absolute -bottom-10 left-1/3 size-72 rounded-full bg-plum/10 blur-3xl"
+                  animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.1, 1] }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
+            )}
             <MotionDiv
               variants={stagger}
               initial="hidden"

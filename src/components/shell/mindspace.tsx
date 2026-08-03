@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   Settings2,
   Keyboard,
+  Accessibility,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -102,6 +103,21 @@ export function MindSpace() {
 
           <div className="flex items-center gap-2">
             <TwinStatusPill />
+            <button
+              onClick={() => a11y.toggleSensoryFriendly()}
+              className={cn(
+                "hidden sm:inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                a11y.sensoryFriendly
+                  ? "border-plum bg-plum/15 text-plum"
+                  : "border-border/60 bg-card text-muted-foreground hover:text-foreground hover:bg-accent"
+              )}
+              aria-pressed={a11y.sensoryFriendly}
+              aria-label="Toggle sensory-friendly mode"
+              title="Sensory-friendly: reduces motion, raises contrast, softens colors"
+            >
+              <Accessibility className="size-3.5" />
+              <span className="hidden lg:inline">{a11y.sensoryFriendly ? "Sensory mode on" : "Sensory mode"}</span>
+            </button>
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("neurotwin:show-shortcuts"))}
               className="hidden md:inline-flex items-center gap-1 rounded-full border border-border/60 bg-card px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"

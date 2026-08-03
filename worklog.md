@@ -727,3 +727,45 @@ Unresolved / next-phase recommendations:
 - Add a "sensory-friendly mode" that auto-reduces all animations globally.
 - Add more chemistry reactions + a molecule builder.
 - Localize the UI itself (buttons, labels) not just the companion chat.
+
+---
+Task ID: 19 (continuous improvement round 10)
+Agent: Main (orchestrator) — cron webDevReview
+Task: QA via agent-browser + VLM, add sensory-friendly mode, expanded chemistry, landing gradient mesh.
+
+Work Log:
+- Reviewed worklog.md; confirmed round 9 added multi-language companion.
+- Ran agent-browser QA. App clean, no errors. Onboarding + MindSpace verified.
+
+NEW FEATURES BUILT:
+1. Sensory-Friendly Mode — one-click max accessibility reduction:
+   - Added `sensoryFriendly` boolean to the accessibility store. When toggled on, applies ALL 4 reductions at once: motion=reduced, contrast=high, calm=on, scale=lg. When toggled off, only clears the sensoryFriendly flag (preserving any individually-set preferences).
+   - Added a prominent toggle button in the MindSpace top bar (Accessibility icon, plum-highlighted when active). Visible label "Sensory mode on" / "Sensory mode" (lg+ screens).
+   - Added a "Sensory-friendly" switch in the accessibility toolbar popover with descriptive hint.
+   - Verified end-to-end: clicked the top-bar toggle, confirmed data-motion=reduced, data-contrast=high, data-calm=on, data-scale=lg all applied to <html> in one action. Perfect for when a learner feels overwhelmed — one tap, maximum gentleness.
+
+2. Expanded Chemistry Simulation — 10 reactions (up from 4):
+   - Added 6 new reactions: H+Cl→HCl (Hydrochloric Acid), Na+O→Na₂O (Sodium Oxide), Fe+O→Fe₂O₃ (Rust), C+H→CH₄ (Methane), H+S→H₂S (Hydrogen Sulfide), Ca+O→CaO (Quicklime).
+   - Added Calcium (Ca) as a 5th Element A option. Added H to Element B options (enabling C+H→Methane).
+   - Each reaction has an educational description (e.g. "What happens when iron meets oxygen over time — rust!").
+   - Verified: chemistry sim renders with all element options, "Mix them" produces correct reactions.
+
+3. Landing Page Animated Gradient Mesh:
+   - Added 3 animated gradient blobs to the hero section backdrop (sage green, amber, plum) with slow drifting motion (18-22s cycles, different directions + scales).
+   - Respects reduced motion (blobs hidden when motion=reduced).
+   - VLM rated 9/10: "soft, multi-tonal gradient background with distinct sage green, amber, and plum hues blending into a light cream base. Clean, modern, perfectly matches the calming, neuro-inclusive aesthetic."
+
+Stage Summary:
+- 3 features shipped: sensory-friendly mode (one-click max reduction), expanded chemistry (10 reactions), landing gradient mesh.
+- Sensory-friendly mode is a key accessibility feature — one tap applies all 4 reductions, ideal for overwhelmed moments.
+- Chemistry sim now covers 10 common compounds with educational descriptions.
+- Landing hero is more visually rich with animated gradient depth.
+- Lint clean, no page errors. VLM rated landing 9/10.
+
+Current project status: ENHANCED with sensory-friendly mode, expanded chemistry, and a richer landing hero.
+Unresolved / next-phase recommendations:
+- Add generated imagery for empty states (Growth forest, galaxy, backpack).
+- Persist twin memories + study items + health logs to Prisma for cross-device continuity.
+- Localize the UI itself (buttons, labels) not just the companion chat.
+- Add a molecule builder (3+ element combinations).
+- Add more breathing patterns + a visual breathing pacer in the Calm Room.

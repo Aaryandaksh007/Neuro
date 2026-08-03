@@ -152,6 +152,18 @@ export function AccessibilityToolbar({ compact = false }: { compact?: boolean })
               aria-label="Toggle calm mode"
             />
           </Row>
+
+          {/* Sensory-friendly mode */}
+          <Row
+            label="Sensory-friendly"
+            hint="Max reduction: motion + contrast + calm + larger text"
+          >
+            <Switch
+              checked={a11y.sensoryFriendly}
+              onCheckedChange={a11y.setSensoryFriendly}
+              aria-label="Toggle sensory-friendly mode"
+            />
+          </Row>
         </div>
       </PopoverContent>
     </Popover>

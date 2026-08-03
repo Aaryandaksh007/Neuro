@@ -986,8 +986,8 @@ function WaveSim({ reduced }: { reduced: boolean | null }) {
 
 /* ===================== Chemistry Reaction Simulation ===================== */
 function ChemistrySim() {
-  const [elemA, setElemA] = useState<"H" | "Na" | "Fe" | "C">("H");
-  const [elemB, setElemB] = useState<"O" | "Cl" | "S" | "O">("O");
+  const [elemA, setElemA] = useState<"H" | "Na" | "Fe" | "C" | "Ca">("H");
+  const [elemB, setElemB] = useState<"O" | "Cl" | "S" | "H">("O");
   const [mixed, setMixed] = useState(false);
   const twin = useTwin((s) => s.bumpTrait);
   const reduced = useReducedMotion();
@@ -1001,6 +1001,12 @@ function ChemistrySim() {
     "Na+Cl": { product: "NaCl", name: "Table Salt", color: "oklch(0.9 0.01 60)", desc: "A metal + a toxic gas = the salt on your food." },
     "Fe+S": { product: "FeS", name: "Iron Sulfide", color: "oklch(0.4 0.02 40)", desc: "A dark, smelly compound — very different from its parts." },
     "C+O": { product: "CO₂", name: "Carbon Dioxide", color: "oklch(0.6 0.05 150)", desc: "What you breathe out. Plants breathe it in." },
+    "H+Cl": { product: "HCl", name: "Hydrochloric Acid", color: "oklch(0.8 0.05 120)", desc: "A strong acid — your stomach uses it to digest food." },
+    "Na+O": { product: "Na₂O", name: "Sodium Oxide", color: "oklch(0.85 0.03 60)", desc: "A white solid that reacts violently with water." },
+    "Fe+O": { product: "Fe₂O₃", name: "Rust", color: "oklch(0.6 0.1 35)", desc: "What happens when iron meets oxygen over time — rust!" },
+    "C+H": { product: "CH₄", name: "Methane", color: "oklch(0.7 0.08 180)", desc: "The main ingredient in natural gas — also cow burps." },
+    "H+S": { product: "H₂S", name: "Hydrogen Sulfide", color: "oklch(0.75 0.12 90)", desc: "The classic rotten-egg smell — but toxic in high doses." },
+    "Ca+O": { product: "CaO", name: "Quicklime", color: "oklch(0.9 0.01 60)", desc: "Used in cement — gets very hot when water is added." },
   };
 
   const key = `${elemA}+${elemB}`;
@@ -1011,6 +1017,7 @@ function ChemistrySim() {
     Na: "oklch(0.78 0.08 15)",
     Fe: "oklch(0.55 0.05 40)",
     C: "oklch(0.3 0.02 60)",
+    Ca: "oklch(0.82 0.02 70)",
     O: "oklch(0.65 0.15 25)",
     Cl: "oklch(0.7 0.1 150)",
     S: "oklch(0.8 0.14 90)",
@@ -1096,7 +1103,7 @@ function ChemistrySim() {
         <div>
           <p className="text-xs text-muted-foreground mb-1.5">Element A</p>
           <div className="flex gap-1.5">
-            {(["H", "Na", "Fe", "C"] as const).map((e) => (
+            {(["H", "Na", "Fe", "C", "Ca"] as const).map((e) => (
               <button
                 key={e}
                 onClick={() => { setElemA(e); setMixed(false); }}
@@ -1114,7 +1121,7 @@ function ChemistrySim() {
         <div>
           <p className="text-xs text-muted-foreground mb-1.5">Element B</p>
           <div className="flex gap-1.5">
-            {(["O", "Cl", "S"] as const).map((e) => (
+            {(["O", "Cl", "S", "H"] as const).map((e) => (
               <button
                 key={e}
                 onClick={() => { setElemB(e); setMixed(false); }}
