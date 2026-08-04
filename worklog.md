@@ -769,3 +769,32 @@ Unresolved / next-phase recommendations:
 - Localize the UI itself (buttons, labels) not just the companion chat.
 - Add a molecule builder (3+ element combinations).
 - Add more breathing patterns + a visual breathing pacer in the Calm Room.
+
+---
+Task ID: 20 (hydration mismatch fix)
+Agent: Main (orchestrator)
+Task: Fix hydration mismatch error caused by persisted Zustand store values differing between server and client.
+
+Problem:
+- The app threw a "Hydration failed because the server rendered HTML didn't match the client" error.
+- Root cause: `MotionDiv` conditionally rendered `<div>` vs `<motion.div>` based on `a11y.motion` (from a persisted Zustand store). On the server, `a11y.motion` is the default "full" → `<motion.div>`. On the client after store rehydration from localStorage, it can be "reduced" → `<div>`. This element type mismatch is a structural hydration error.
+- Secondary issue: `Landing` used `onboarded` (also persisted) for button text ("Begin" vs "Enter MindSpace"), causing text content mismatches.
+- The landing gradient mesh (`!reduced && (...)`) also conditionally rendered based on the persisted `reduced` value.
+
+Fix:
+- Created `src/hooks/use-mounted.ts`: a `useMounted()` hook that returns `false` on server + initial client render, then `true` after mount (via `queueMicrotask` in `useEffect` to satisfy the `react-hooks/set-state-in-effect` lint rule).
+- Updated `MotionDiv` (`src/components/shared/motion.tsx`): `reduced = mounted && (osReduced || appMotion === "reduced")`. During SSR + initial client render, `reduced` is always false → `<motion.div>` on both. After mount, if reduced is preferred, it switches to `<div>` (a normal post-hydration update, not a mismatch).
+- Updated `Landing` (`src/components/land/landing.tsx`): `reduced = mounted && (osReduced || a11y.motion === "reduced")` for the gradient mesh. `showOnboarded = mounted && onboarded` for all button text. Ensures server and client render identical HTML during hydration.
+- Fixed conditional hook call: `useReducedMotion()` is now called unconditionally (stored in `osReduced`), then combined with `mounted` — avoiding the "React Hook called conditionally" lint error.
+
+Verification:
+- Reproduced the original failure: set `motion=reduced` + `sensoryFriendly=true` + `onboarded=true` in localStorage, reloaded the page → NO hydration errors.
+- Verified button text correctly shows "Begin" during SSR, then updates to "Enter MindSpace" after mount (when `onboarded=true` is in localStorage).
+- Verified MotionDiv renders `<motion.div>` during SSR, then switches to `<div>` after mount (when `motion=reduced`).
+- Lint clean, no console errors.
+
+Stage Summary:
+- Hydration mismatch error fully resolved.
+- Root cause: persisted Zustand store values (a11y.motion, onboarded) differ between server (defaults) and client (from localStorage).
+- Fix: `useMounted()` hook ensures SSR + initial client render use consistent values, then updates after mount.
+- This is a foundational fix that prevents future hydration issues from any persisted store value used in rendering.

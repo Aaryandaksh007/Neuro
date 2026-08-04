@@ -23,6 +23,7 @@ import { NeuroTwinLogo, Wordmark } from "@/components/shared/logo";
 import { AccessibilityToolbar } from "@/components/shared/accessibility-toolbar";
 import { useApp } from "@/store/app";
 import { useAccessibility } from "@/store/accessibility";
+import { useMounted } from "@/hooks/use-mounted";
 import { MotionDiv, fadeUp, stagger } from "@/components/shared/motion";
 
 const WORLDS = [
@@ -78,9 +79,14 @@ export function Landing() {
   const enterMindSpace = useApp((s) => s.enterMindSpace);
   const onboarded = useApp((s) => s.onboarded);
   const a11y = useAccessibility();
-  const reduced = useReducedMotion() || a11y.motion === "reduced";
+  const mounted = useMounted();
+  const osReduced = useReducedMotion();
+  const reduced = mounted && (osReduced || a11y.motion === "reduced");
 
   const start = () => (onboarded ? enterMindSpace() : setView("onboarding"));
+  // Guard against hydration mismatch: onboarded is persisted (localStorage),
+  // so it's false on the server but could be true on the client.
+  const showOnboarded = mounted && onboarded;
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-x-clip">
@@ -110,7 +116,7 @@ export function Landing() {
             </Button>
             <AccessibilityToolbar compact />
             <Button size="sm" className="rounded-full" onClick={start}>
-              {onboarded ? "Enter MindSpace" : "Begin"}
+              {showOnboarded ? "Enter MindSpace" : "Begin"}
               <ArrowRight className="size-4" />
             </Button>
           </div>
@@ -199,7 +205,7 @@ export function Landing() {
 
               <MotionDiv variants={fadeUp} className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Button size="lg" className="rounded-full text-base h-12 px-7" onClick={start}>
-                  {onboarded ? "Open MindSpace" : "Create your Digital Twin"}
+                  {showOnboarded ? "Open MindSpace" : "Create your Digital Twin"}
                   <ArrowRight className="size-4" />
                 </Button>
                 <Button
@@ -411,7 +417,7 @@ export function Landing() {
                 </p>
                 <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
                   <Button size="lg" className="rounded-full h-12 px-7 text-base" onClick={start}>
-                    {onboarded ? "Enter MindSpace" : "Begin onboarding"}
+                    {showOnboarded ? "Enter MindSpace" : "Begin onboarding"}
                     <ArrowRight className="size-4" />
                   </Button>
                   <Button

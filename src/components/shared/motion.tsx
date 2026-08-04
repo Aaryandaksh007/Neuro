@@ -2,9 +2,14 @@
 
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useAccessibility } from "@/store/accessibility";
+import { useMounted } from "@/hooks/use-mounted";
 import type { ReactNode } from "react";
 
 // Honors the app's reduced-motion preference (in addition to OS).
+// Uses mounted() to avoid hydration mismatches: the persisted a11y.motion
+// value differs between server (default "full") and client (from localStorage).
+// During SSR + initial client render, we always render <motion.div> (non-reduced).
+// After mount, if reduced motion is preferred, we switch to a plain <div>.
 export function MotionDiv({
   children,
   className,
@@ -26,7 +31,8 @@ export function MotionDiv({
 }) {
   const osReduced = useReducedMotion();
   const appMotion = useAccessibility((s) => s.motion);
-  const reduced = osReduced || appMotion === "reduced";
+  const mounted = useMounted();
+  const reduced = mounted && (osReduced || appMotion === "reduced");
 
   if (reduced) {
     return <div className={className}>{children}</div>;
