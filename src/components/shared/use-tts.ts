@@ -41,7 +41,7 @@ export function useTTS() {
   }, [cleanup]);
 
   const playChunk = useCallback(
-    async (text: string, idx: number, voice: string, speed: number) => {
+    async function playChunkFn(text: string, idx: number, voice: string, speed: number) {
       if (abortedRef.current) return;
       setIsLoading(true);
       try {
@@ -69,7 +69,7 @@ export function useTTS() {
           const next = idx + 1;
           if (next < total && !abortedRef.current) {
             chunkIdxRef.current = next;
-            playChunk(text, next, voice, speed);
+            playChunkFn(text, next, voice, speed);
           } else {
             setIsPlaying(false);
             setIsLoading(false);

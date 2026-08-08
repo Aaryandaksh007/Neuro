@@ -52,7 +52,7 @@ export function NeuroTwinLogo({
 export function Wordmark({ className }: { className?: string }) {
   return (
     <span className={cn("font-semibold tracking-tight", className)}>
-      NeuroTwin<span className="text-primary"> OS</span>
+      NeuroMastishk<span className="text-primary"> OS</span>
     </span>
   );
 }

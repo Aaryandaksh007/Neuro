@@ -19,8 +19,9 @@ export function MotionDiv({
   exit,
   transition,
   layout,
+  id,
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   variants?: Variants;
   initial?: any;
@@ -28,6 +29,7 @@ export function MotionDiv({
   exit?: any;
   transition?: any;
   layout?: boolean;
+  id?: string;
 }) {
   const osReduced = useReducedMotion();
   const appMotion = useAccessibility((s) => s.motion);
@@ -35,10 +37,11 @@ export function MotionDiv({
   const reduced = mounted && (osReduced || appMotion === "reduced");
 
   if (reduced) {
-    return <div className={className}>{children}</div>;
+    return <div id={id} className={className}>{children}</div>;
   }
   return (
     <motion.div
+      id={id}
       className={className}
       variants={variants}
       initial={initial}

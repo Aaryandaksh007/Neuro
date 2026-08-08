@@ -44,6 +44,7 @@ export function Reminders() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(MEDS_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw) setMeds(JSON.parse(raw));
     } catch {
       /* ignore */

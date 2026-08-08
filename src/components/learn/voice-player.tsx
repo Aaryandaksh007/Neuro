@@ -66,7 +66,7 @@ export function VoicePlayer({
   }, []);
 
   const playChunk = useCallback(
-    async (idx: number) => {
+    async function playChunkFn(idx: number) {
       if (abortedRef.current) return;
       setIsLoading(true);
       setError(null);
@@ -101,7 +101,7 @@ export function VoicePlayer({
           const next = idx + 1;
           if (next < total && !abortedRef.current) {
             setChunkIdx(next);
-            playChunk(next);
+            playChunkFn(next);
           } else {
             setIsPlaying(false);
             setIsLoading(false);

@@ -437,6 +437,7 @@ export function CompanionCreature() {
         kind: "celebration",
       });
       addAchievement({
+        id: `stage-${companionStage}`,
         title: "Caretaker",
         desc: `Your companion reached stage ${companionStage}.`,
         icon: "sprout",

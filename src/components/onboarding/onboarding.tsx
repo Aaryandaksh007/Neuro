@@ -90,8 +90,8 @@ export function Onboarding() {
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <NeuroTwinLogo size={32} />
-            <span className="font-semibold tracking-tight">
-              NeuroTwin<span className="text-primary"> OS</span>
+            <span className="font-semibold tracking-tight text-xl">
+              NeuroMastishk<span className="text-primary"> OS</span>
             </span>
           </div>
           <AccessibilityToolbar compact />

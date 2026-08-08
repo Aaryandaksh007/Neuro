@@ -148,7 +148,7 @@ export function CoverSlide() {
             className="rounded-full px-3 py-1 gap-1.5 mb-6"
           >
             <Trophy className="size-3.5 text-primary" />
-            Judge Mode · NeuroTwin OS
+            Judge Mode · NeuroMastishk OS
           </Badge>
         </MotionDiv>
 
@@ -186,7 +186,7 @@ export function CoverSlide() {
 
         <MotionDiv variants={fadeUp} className="mt-6 max-w-2xl">
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-            NeuroTwin OS is an accessibility-first AI learning companion that
+            NeuroMastishk OS is an accessibility-first AI learning companion that
             adapts technology to every individual brain — not the other way
             around. Built with and for neurodivergent learners. Safe. Seen.
             Calm. Empowered.
@@ -541,7 +541,7 @@ const MAYA_DAY = [
     icon: Sun,
     accent: "text-amber-glow-foreground",
     tint: "bg-amber-glow/15",
-    body: "Maya opens NeuroTwin. Brain Weather reads \u201Cfoggy, low energy.\u201D The Twin suggests a 12-minute session instead of 20. She agrees — one tap.",
+    body: "Maya opens NeuroMastishk. Brain Weather reads \u201Cfoggy, low energy.\u201D The Twin suggests a 12-minute session instead of 20. She agrees — one tap.",
     twin: "“We'll keep it short today. That's not failure — that's smart.”",
   },
   {
@@ -603,7 +603,7 @@ export function UserStorySlide() {
           <span className="text-amber-glow-foreground">ADHD + dyslexia</span>.
         </SlideHeading>
         <p className="text-muted-foreground mt-4 max-w-2xl leading-relaxed">
-          One day with NeuroTwin OS. No grades. No timers. No shame. Just a
+          One day with NeuroMastishk OS. No grades. No timers. No shame. Just a
           companion that quietly meets her where she is — every hour.
         </p>
       </MotionDiv>

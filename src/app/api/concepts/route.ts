@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     const system = `${SAFETY_PREAMBLE}
 
-You are the Knowledge Graph engine inside NeuroTwin OS. Given a list of concepts a learner has explored, find the most meaningful connections between them.
+You are the Knowledge Graph engine inside NeuroMastishk OS. Given a list of concepts a learner has explored, find the most meaningful connections between them.
 
 Return STRICT JSON only — no markdown, no explanation outside the JSON. Format:
 {

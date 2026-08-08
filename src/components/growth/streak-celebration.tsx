@@ -72,6 +72,7 @@ export function StreakCelebration() {
     });
     bumpTrait("confidence", 5, `Hit a ${streak}-day streak.`);
     addAchievement({
+      id: `streak-${streak}`,
       title: `${streak}-Day Streak`,
       desc: `You showed up ${streak} days in a row. Gentle, consistent, real.`,
       icon: "flame",

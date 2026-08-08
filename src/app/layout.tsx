@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NeuroTwin OS — Your Mind. Understood. Never Judged.",
+  title: "NeuroMastishk OS — Your Mind. Understood. Never Judged.",
   description:
     "An AI learning companion that adapts to every individual brain. Built for neurodivergent learners — safe, seen, calm, empowered.",
   keywords: [
@@ -30,12 +30,12 @@ export const metadata: Metadata = {
     "accessibility",
     "adaptive learning",
   ],
-  authors: [{ name: "NeuroTwin OS" }],
+  authors: [{ name: "NeuroMastishk OS" }],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
   openGraph: {
-    title: "NeuroTwin OS",
+    title: "NeuroMastishk OS",
     description: "Your Mind. Understood. Never Judged.",
     type: "website",
   },

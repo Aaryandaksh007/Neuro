@@ -173,7 +173,7 @@ export function Landing() {
               </MotionDiv>
               <MotionDiv variants={fadeUp} className="mt-6 max-w-2xl">
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  NeuroTwin OS is an AI learning companion that adapts to every
+                  NeuroMastishk OS is an AI learning companion that adapts to every
                   individual brain — not the other way around. Built with and
                   for neurodivergent learners. Safe. Seen. Calm. Empowered.
                 </p>

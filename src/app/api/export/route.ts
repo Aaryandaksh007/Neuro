@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     const system = `${SAFETY_PREAMBLE}
 
-You are generating a learning summary for a ${isEducator ? "educator" : "parent/guardian"} of a neurodivergent learner using NeuroTwin OS. This is a gentle, honest, strengths-based summary — NEVER diagnostic, NEVER shaming.
+You are generating a learning summary for a ${isEducator ? "educator" : "parent/guardian"} of a neurodivergent learner using NeuroMastishk OS. This is a gentle, honest, strengths-based summary — NEVER diagnostic, NEVER shaming.
 
 Format as clean markdown with these sections:
 ## Learning Summary — [Name]

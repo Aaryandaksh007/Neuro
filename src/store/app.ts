@@ -9,7 +9,7 @@ export type AppView =
   | "mindspace"
   | "judge";
 
-export type World = "learn" | "wellness" | "health" | "growth";
+export type World = "learn" | "wellness" | "health" | "growth" | "twin";
 
 export type LearningStyle = "visual" | "verbal" | "auditory" | "kinesthetic" | "reading";
 

@@ -66,6 +66,13 @@ export function VoiceInput({
     chunksRef.current = [];
   }, []);
 
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecording(false);
+  }, []);
+
   useEffect(() => {
     return cleanup;
   }, [cleanup]);
@@ -155,12 +162,7 @@ export function VoiceInput({
     }
   }, [cleanup, mode, currentValue, onTranscript]);
 
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-      mediaRecorderRef.current.stop();
-    }
-    setIsRecording(false);
-  }, []);
+
 
   const handleClick = () => {
     if (isRecording) {

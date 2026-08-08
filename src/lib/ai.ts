@@ -21,6 +21,7 @@ export async function chat(
   if (opts.system) full.push({ role: "assistant", content: opts.system });
   full.push(...messages);
   const completion = await zai.chat.completions.create({
+    model: "meta/llama-3.1-70b-instruct",
     messages: full,
     thinking: { type: opts.thinking ? "enabled" : "disabled" },
   } as any);
