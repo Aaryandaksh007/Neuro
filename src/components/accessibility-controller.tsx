@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useShallow } from "zustand/shallow";
 import { useAccessibility } from "@/store/accessibility";
 import type { FontChoice, FontScale, MotionPref, ContrastPref } from "@/store/accessibility";
 
@@ -21,11 +22,19 @@ function applyAttrs(s: {
 }
 
 export function AccessibilityController() {
-  const a11y = useAccessibility();
+  const a11y = useAccessibility(
+    useShallow((state) => ({
+      font: state.font,
+      scale: state.scale,
+      motion: state.motion,
+      contrast: state.contrast,
+      calm: state.calm,
+    }))
+  );
 
   useEffect(() => {
     applyAttrs(a11y);
-  }, [a11y.font, a11y.scale, a11y.motion, a11y.contrast, a11y.calm]);
+  }, [a11y]);
 
   return null;
 }
